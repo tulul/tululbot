@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 import requests
 
 app = Flask(__name__)
-app.config['DEBUG'] = environ.get('DEBUG', False)
+app.config['DEBUG'] = environ.get('DEBUG') == 'true'
 
 # Telegram configuration
 TOKEN = environ['TELEGRAM_BOT_TOKEN']
@@ -75,3 +75,7 @@ def main():
                 return reply(about_text)
 
     return 'Nothing to do here...'
+
+
+if __name__ == '__main__':
+    app.run()
