@@ -35,8 +35,7 @@
 
 1. The app is now running! Try to play around with it by simulating a webhook request. For instance, try this:
    ```bash
-   curl --data '{"update_id": 12345}' --header "Content-Type: application/json" http://127.0.0.1:5000/somerandomstring
+   curl --data '{"update_id": 12345,"message":{"text":"/wiki potus","chat":{"id":-12345},"message_id":1}}' --header "Content-Type: application/json" http://127.0.0.1:5000/somerandomstring
    ```
-   This should respond with `Nothing to do here...`
 
    As you can see, the url endpoint is determined by the `TELEGRAM_BOT_TOKEN` config var. This is recommended by Telegram.
