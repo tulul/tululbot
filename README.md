@@ -2,6 +2,8 @@
 
 ## How to contribute
 
+**NOTE:** This guide only works for `revamp` branch.
+
 1. Make sure you have Python on your system.
 
 1. Install [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/) to make it easier working with [virtualenv](https://virtualenv.pypa.io/en/latest/).  We need virtualenv because Tululbot uses Python 3, whereas most systems still use Python 2. Virtualenv makes it easy to manage different Python versions along with their libraries. There are many ways to install virtualenvwrapper. One of the easiest way is to use Pip.
@@ -21,7 +23,7 @@
 1. [Create a Python 3 virtual environment](https://virtualenvwrapper.readthedocs.org/en/latest/command_ref.html#mkvirtualenv) and clone this repository.
    ```bash
    mkvirtualenv -p /path/to/python3/binary name_of_your_virtualenv
-   git clone git@github.com:tulul/tululbot.git /path/to/your/tululbot/project/directory
+   git clone -b revamp git@github.com:tulul/tululbot.git /path/to/your/tululbot/project/directory
    ```
 
 1. Activate the virtual environment you've just created.
