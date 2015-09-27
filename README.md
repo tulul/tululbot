@@ -1,6 +1,8 @@
 # Tululbot
 
-## How to contribute
+# Development Guide
+
+## How to setup your machine
 
 **NOTE:** This guide only works for `revamp` branch.
 
@@ -11,7 +13,7 @@
    pip install virtualenvwrapper
    ```
 
-   [Pip](https://pip.pypa.io/en/latest/) is the default package manager for Python. It should be installed if you have Python 2.7 or Python 3.x on your system.
+   [Pip](https://pip.pypa.io/en/latest/) is the default package manager for Python. It should already be installed if you have Python 2.7 or Python 3.x on your system.
 
 1. Configure your virtualenvwrapper as described in [their docs](https://virtualenvwrapper.readthedocs.org/en/latest/install.html#shell-startup-file).
 
