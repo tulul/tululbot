@@ -1,5 +1,6 @@
 import logging
 from os import environ
+from urllib.parse import urlencode
 
 from flask import Flask, request, jsonify
 import requests
@@ -69,7 +70,8 @@ def main():
             elif text.startswith('/ngelely'):
                 term = text[9:]
                 if term:
-                    google_url = 'https://www.google.co.id/#q={}'.format(term)
+                    qs = urlencode(dict(q=term))
+                    google_url = 'https://www.google.co.id/#{}'.format(qs)
                     return reply('Jangan nge-lely\n{}'.format(google_url))
             elif text == '/who':
                 about_text = (
