@@ -31,7 +31,7 @@
 1. [Create a Python 3 virtual environment](https://virtualenvwrapper.readthedocs.org/en/latest/command_ref.html#mkvirtualenv) and clone this repository.
    ```bash
    mkvirtualenv -p /path/to/python3/binary name_of_your_virtualenv
-   git clone -b revamp git@github.com:tulul/tululbot.git /path/to/your/tululbot/project/directory
+   git clone git@github.com:tulul/tululbot.git /path/to/your/tululbot/project/directory
    ```
 
 1. Activate the virtual environment you've just created.
