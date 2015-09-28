@@ -4,18 +4,24 @@ from os import environ
 from flask import Flask, request, jsonify
 import requests
 
+
+# Config variables
+# This might be put into a separate file once this grows larger
+DEBUG = environ.get('DEBUG') == 'true'
+TELEGRAM_BOT_TOKEN = environ.get('TELEGRAM_BOT_TOKEN', '')
+LOG_LEVEL = environ.get('LOG_LEVEL', 'WARNING')
+
+
 app = Flask(__name__)
-app.config['DEBUG'] = environ.get('DEBUG') == 'true'
+app.config.from_object(__name__)
 
-# Telegram configuration
-TOKEN = environ['TELEGRAM_BOT_TOKEN']
-
-# Why do this? See https://core.telegram.org/bots/api#setwebhook
-BASE_PATH = '/{}'.format(TOKEN)
 
 # Configure logging
-LOG_LEVEL = environ.get('LOG_LEVEL', 'WARNING')
 logging.basicConfig(level=getattr(logging, LOG_LEVEL))
+
+
+# Why do this? See https://core.telegram.org/bots/api#setwebhook
+base_path = '/{}'.format(TELEGRAM_BOT_TOKEN)
 
 
 def wiki(term):
@@ -32,7 +38,7 @@ def wiki(term):
         return 'Shit happens...'
 
 
-@app.route(BASE_PATH, methods=['POST'])
+@app.route(base_path, methods=['POST'])
 def main():
     body = request.get_json()
     logging.debug('update_id is %s', body['update_id'])
@@ -70,7 +76,7 @@ def main():
                     'telebot untuk tulul :v\n'
                     'dibuat dengan Python 3.4 dan cinta\n'
                     'baru bisa ngewiki dan ngelely doang\n'
-                    'kontribusi di https://bitbucket.org/iqbalmineraltown/tululbot/'
+                    'kontribusi di https://github.com/tulul/tululbot'
                 )
                 return reply(about_text)
 
