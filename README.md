@@ -1,10 +1,16 @@
 # Tululbot
 
+# User Guide
+## Command List
+**/ngelely**\<space\>\<keywords\> - Returns google search with given keywords
+
+**/wiki**\<space\>\<keywords\> - Try to return wiki page with given keywords
+
+**/who** - Know your tululbot
+
 # Development Guide
 
 ## How to setup your machine
-
-**NOTE:** This guide only works for `revamp` branch.
 
 1. Make sure you have Python on your system.
 
