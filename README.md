@@ -114,7 +114,7 @@ If you want to write new features to TululBot or fix bugs, that's great! Here is
 
    Again, fix any conflicts that may arise.
 
-1. Then, clean up your commits. Do a interactive rebase (please google this term). For each commit you want to include:
+1. Then, clean up your commits. Do a interactive rebase (please google this term). You can pick, fix up, squash, or reorder the commits, or anything in any way you like. For each commit you want to include:
 
    - If necessary, rewrite the commit message to a more meaningful one.
    - If your contribution consists of a single commit, append `Resolve #X` to your commit message, where `X` is the issue number. If your contribution consists of multiple commits, append it to the last commit. For the other commits, append `Part of #X`.
