@@ -81,7 +81,7 @@ If you want to write new features to TululBot or fix bugs, that's great! Here is
 
 #### General Flow
 
-1. Create a new issue on GitHub about your contribution. This can be a bug report (in which case your contribution is the bug fix) or feature suggestion (in which case your contribution is the implementation).
+1. You need an issue on GitHub about your contribution. This can be a bug report (in which case your contribution is the bug fix) or feature suggestion (in which case your contribution is the implementation). If your contribution is a about new issue you want to raise, create a new issue on GitHub.
 
 1. Create a new branch on which you write your code. Use any branch name as you which. For example, `cool-feature`:
    ```bash
