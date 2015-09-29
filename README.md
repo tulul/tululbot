@@ -1,4 +1,4 @@
-# Tululbot
+# TululBot
 
 ## User Guide
 ### Command List
@@ -10,11 +10,11 @@
 
 ## Development Guide
 
-### How to setup your machine
+### How to set up your machine
 
 1. Make sure you have Python on your system.
 
-1. Install [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/) to make it easier working with [virtualenv](https://virtualenv.pypa.io/en/latest/).  We need virtualenv because Tululbot uses Python 3, whereas most systems still use Python 2. Virtualenv makes it easy to manage different Python versions along with their libraries. There are many ways to install virtualenvwrapper. One of the easiest way is to use Pip.
+1. Install [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/) to make it easier working with [virtualenv](https://virtualenv.pypa.io/en/latest/).  We need virtualenv because Tululbot uses Python 3, whereas most systems still use Python 2. Virtualenv makes it easy to manage different Python versions along with their libraries. There are many ways to install virtualenvwrapper. One of the easiest wayss is to use Pip.
    ```bash
    pip install virtualenvwrapper
    ```
@@ -47,7 +47,7 @@
 
    Dependencies are all listed in `requirements.txt`. To generate this file, simply run `pip freeze > requirements.txt`.
 
-1. Before running the app, you have to set environment variables. Those variables will be used to configure the app. Again, there are many ways to do this one of them is to use virtualenv's `postactivate` and `predeactivate` hook.
+1. Before running the app, you have to set environment variables. Those variables will be used to configure the app. Again, there are many ways to do this and one of them is to use virtualenv's `postactivate` and `predeactivate` hook.
 
    Assuming you have set your `$WORKON_HOME` correctly, under `$WORKON_HOME/name_of_your_virtualenv/bin` directory you have `postactivate` and `predeactivate` files. Those two files will be executed by virtualenv after activating and before deactivating `name_of_your_virtualenv` respectively. Thus, in `postactivate`, you may put
    ```bash
