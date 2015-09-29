@@ -65,7 +65,7 @@
 
 1. Run the app
    ```bash
-   python app.py
+   python tululbot.py
    ```
 
 1. The app is now running! Try to play around with it by simulating a webhook request. For instance, try this:
@@ -74,6 +74,12 @@
    ```
 
    As you can see, the url endpoint is determined by the `TELEGRAM_BOT_TOKEN` config var. This is actually [recommended by Telegram](https://core.telegram.org/bots/api#setwebhook).
+
+### How to run the tests
+
+1. Make sure you already installed [pytest](http://pytest.org/latest/). `pytest` is listed in `requirements.txt` so if you followed the instructions to setup your machine above then it should already be installed.
+
+1. Run `py.test`.
 
 ### How to Contribute
 

@@ -7,4 +7,6 @@ install:
   - pip install -r requirements.txt  
 script:
   # Linting
-  - flake8 app.py
+  - flake8 tululbot.py
+  # Run tests
+  - py.test
