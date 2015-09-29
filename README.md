@@ -74,3 +74,86 @@
    ```
 
    As you can see, the url endpoint is determined by the `TELEGRAM_BOT_TOKEN` config var. This is actually [recommended by Telegram](https://core.telegram.org/bots/api#setwebhook).
+
+### How to Contribute
+
+If you want to write new features to TululBot or fix bugs, that's great! Here is a step-by-step guide to contribute to TululBot's development.
+
+#### General Flow
+
+1. Create a new issue on GitHub about your contribution. This can be a bug report (in which case your contribution is the bug fix) or feature suggestion (in which case your contribution is the implementation).
+
+1. Create a new branch on which you write your code. Use any branch name as you which. For example, `cool-feature`:
+   ```bash
+   git checkout -b cool-feature
+   ```
+1. Implement your contribution in the branch.
+
+1. Periodically, and after you finished writing the code, pull the latest changes from master:
+   ```bash
+   git pull --rebase origin master
+   ```
+
+   Fix any conflicts that may arise.
+
+1. After you really finished writing the code, commit your changes. You may create one or more commits.
+
+1. Push the feature branch to `origin`:
+   ```bash
+   git push origin cool-feature
+   ```
+1. Create a new pull request on GitHub for `cool-feature` branch to be merged to `master`. Refer the issue number in the pull request description.
+
+1. Wait for other tulul members to review your contribution.
+
+1. If they approve your contribution, congrats! You may commit your contribution to master. First, don't forget to rebase your branch against master:
+
+   ```bash
+   git pull --rebase origin master
+   ```
+
+   Again, fix any conflicts that may arise.
+
+1. Then, clean up your commits. Do a interactive rebase (please google this term). For each commit you want to include:
+
+   - If necessary, rewrite the commit message to a more meaningful one.
+   - If your contribution consists of a single commit, append `Resolve #X` to your commit message, where `X` is the issue number. If your contribution consists of multiple commits, append it to the last commit. For the other commits, append `Part of #X`.
+
+1. Force-push your feature branch to origin:
+
+   ```bash
+   git push -f origin cool-feature
+   ```
+1. Checkout master:
+
+   ```bash
+   git checkout master
+   ```
+
+1. Merge your changes to master:
+
+   ```bash
+   git merge cool-feature
+   ```
+
+1. Push master:
+
+   ```bash
+   git push origin master
+   ```
+
+   Note that your pull request will be automatically closed.
+
+1. You may safely delete your feature branch:
+
+   ```bash
+   git branch -D cool-feature
+   ```
+
+   Also delete your feature branch on origin from GitHub.
+
+1. Done!
+
+#### Special Cases
+
+In case you want to commit a really minor fix, you may skip all above steps and directly push to master. For example, fixing typos, fixing whitespaces, super minor bug you spotted in your previous commits, etc. Remeber, our development process model is **Leaderless Agile**. Don't over-abuse this rule. With great power, comes great responsibility.
