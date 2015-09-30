@@ -1,4 +1,4 @@
-# TululBot
+# TululBot ![TululBot Build Status](https://travis-ci.org/tulul/tululbot.svg)
 
 ## User Guide
 ### Command List
