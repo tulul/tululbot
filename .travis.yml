@@ -4,9 +4,9 @@ python:
   - "3.4"
 install:
   # Build/test dependencies
-  - pip install -r requirements.txt  
+  - pip install -r requirements.txt
 script:
   # Linting
-  - flake8 tululbot.py
+  - flake8 *.py
   # Run tests
   - py.test

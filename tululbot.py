@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
 import requests
+from QuoteEngine import QuoteEngine
 
 
 def create_app(config_dict):
@@ -18,6 +19,9 @@ def create_app(config_dict):
 
     # Configure application logging
     app.logger.setLevel(app.config['LOG_LEVEL'])
+
+    quote_engine = QuoteEngine()
+    quote_engine.refresh_cache()
 
     def leli(term):
         """
@@ -103,6 +107,8 @@ def create_app(config_dict):
                     if not term:
                         return reply('Apa yang mau dileli?')
                     return reply(leli(term))
+                elif text.startswith('/quote'):
+                    return reply(quote_engine.retrieve_random())
                 elif text == '/who':
                     about_text = (
                         'TululBot v0.1.0\n\n'
