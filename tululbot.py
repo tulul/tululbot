@@ -19,8 +19,7 @@ def create_app(config_dict):
     app.logger.setLevel(app.config['LOG_LEVEL'])
 
     def wiki(term):
-        """Return a wiki link and the first paragraph of the page."""
-
+        """Return a wiki link for the term."""
         search_term = term.replace(' ', '_')
         url = 'http://en.wikipedia.org/wiki/{}'.format(search_term)
         r = requests.get(url)
