@@ -2,6 +2,7 @@ from os import environ
 from urllib.parse import urlencode
 
 from flask import Flask, request, jsonify
+from bs4 import BeautifulSoup
 import requests
 
 
@@ -18,17 +19,61 @@ def create_app(config_dict):
     # Configure application logging
     app.logger.setLevel(app.config['LOG_LEVEL'])
 
-    def wiki(term):
-        """Return a wiki link for the term."""
-        search_term = term.replace(' ', '_')
-        url = 'http://en.wikipedia.org/wiki/{}'.format(search_term)
-        r = requests.get(url)
-        if r.status_code == 200:
-            return '{}'.format(url)
-        elif r.status_code == 404:
-            return 'Gak ada artikelnya. Jangan nge-lely.'
-        else:
-            return 'Shit happens...'
+    def leli(term):
+        """
+        Return the first paragraph of a relevant page on Wikipedia,
+        or a google search link if no relevant pages found.
+        """
+
+        def search_on_wikipedia():
+            def has_result(page):
+                return 'Search results' not in page
+
+            def parse_content_text(page):
+                return BeautifulSoup(page).find('div', id='mw-content-text')
+
+            def parse_first_paragraph(page):
+                return parse_content_text(page).find('p').get_text()
+
+            def has_disambiguations(paragraph):
+                return 'may refer to:' in paragraph
+
+            def parse_first_disambiguation_link(page):
+                path = parse_content_text(page).find('ul').find('a')['href']
+                return 'https://en.wikipedia.org{}'.format(path)
+
+            query_string = urlencode(dict(search=term))
+            search_url = \
+                'https://en.wikipedia.org/w/index.php?{}'.format(query_string)
+
+            response = requests.get(search_url)
+            if response.status_code != 200:
+                return None
+
+            page = response.text
+            if not has_result(page):
+                return None
+
+            first_paragraph = parse_first_paragraph(page)
+            if not has_disambiguations(first_paragraph):
+                return first_paragraph
+
+            disambiguation_url = parse_first_disambiguation_link(page)
+
+            response = requests.get(disambiguation_url)
+            if response.status_code != 200:
+                return None
+
+            disambiguated_page = response.text
+            return parse_first_paragraph(disambiguated_page)
+
+        def search_on_google():
+            query_string = urlencode(dict(q=term))
+            search_url = 'https://google.com/search?{}'.format(query_string)
+            return 'Jangan ngeleli! Googling dong: {}'.format(search_url)
+
+        result = search_on_wikipedia()
+        return result if result is not None else search_on_google()
 
     @app.route(base_path, methods=['POST'])
     def main():
@@ -53,17 +98,11 @@ def create_app(config_dict):
                 return jsonify(**payload)
 
             if text is not None:
-                if text.startswith('/wiki'):
+                if text.startswith('/leli'):
                     term = text[6:]
-                    if term:
-                        return reply(wiki(term))
-                    return reply('Masukin kata kunci pencarian lah')
-                elif text.startswith('/ngelely'):
-                    term = text[9:]
-                    if term:
-                        qs = urlencode(dict(q=term))
-                        google_url = 'https://www.google.co.id/#{}'.format(qs)
-                        return reply('Jangan nge-lely\n{}'.format(google_url))
+                    if not term:
+                        return reply('Apa yang mau dileli?')
+                    return reply(leli(term))
                 elif text == '/who':
                     about_text = (
                         'telebot untuk tulul :v\n'

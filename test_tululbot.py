@@ -1,5 +1,5 @@
 import json
-from unittest.mock import patch
+from unittest.mock import patch, call
 
 import pytest
 
@@ -43,12 +43,12 @@ def test_no_text(app):
     assert rv.get_data(as_text=True) == 'Nothing to do here...'
 
 
-def test_wiki_command_with_no_term(app):
+def test_leli_command_with_no_term(app):
     payload = {
         'update_id': 12345,
         'message': {
             'message_id': 100,
-            'text': '/wiki',
+            'text': '/leli',
             'chat': {
                 'id': 1
             }
@@ -60,19 +60,26 @@ def test_wiki_command_with_no_term(app):
     json_response = json.loads(rv.get_data(as_text=True))
     assert json_response['method'] == 'sendMessage'
     assert json_response['chat_id'] == 1
-    assert json_response['text'] == 'Masukin kata kunci pencarian lah'
+    assert json_response['text'] == 'Apa yang mau dileli?'
     assert json_response['disable_web_page_preview'] == 'false'
     assert json_response['reply_to_message_id'] == 100
 
 
-def test_wiki_command_with_term_whose_article_can_be_found(app):
+def test_leli_command_with_term_found_on_wikipedia(app):
     with patch('tululbot.requests') as mock_requests:
         mock_requests.get.return_value.status_code = 200
+        mock_requests.get.return_value.text = (
+            '<html>'
+            '    <div id="mw-content-text">'
+            '        <p>Tulul is the synonym of cool.</p>'
+            '    </div>'
+            '</html>'
+        )
         payload = {
             'update_id': 12345,
             'message': {
                 'message_id': 100,
-                'text': '/wiki tulul',
+                'text': '/leli tulul',
                 'chat': {
                     'id': 1
                 }
@@ -80,23 +87,55 @@ def test_wiki_command_with_term_whose_article_can_be_found(app):
         }
         rv = app.post('/', data=json.dumps(payload),
                       content_type='application/json')
+
+        mock_requests.get.assert_called_once_with(
+            'https://en.wikipedia.org/w/index.php?search=tulul'
+        )
+
         assert rv.status_code == 200
         json_response = json.loads(rv.get_data(as_text=True))
         assert json_response['method'] == 'sendMessage'
         assert json_response['chat_id'] == 1
-        assert json_response['text'] == 'http://en.wikipedia.org/wiki/tulul'
+        assert json_response['text'] == 'Tulul is the synonym of cool.'
         assert json_response['disable_web_page_preview'] == 'false'
         assert json_response['reply_to_message_id'] == 100
 
 
-def test_wiki_command_with_term_whose_article_cannot_be_found(app):
+def test_leli_command_with_ambiguous_term_on_wikipedia(app):
     with patch('tululbot.requests') as mock_requests:
-        mock_requests.get.return_value.status_code = 404
+        class FakeResponse(object):
+            pass
+
+        response1 = FakeResponse()
+        response1.status_code = 200
+        response1.text = (
+            '<html>'
+            '    <div id="mw-content-text">'
+            '        <p>Snowden may refer to:</p>'
+            '        <ul>'
+            '            <li><a href="/wiki/link1">Snowden1</a></li>'
+            '            <li><a href="/wiki/link2">Snowden2</a></li>'
+            '        </ul>'
+            '    </div>'
+            '</html>'
+        )
+        response2 = FakeResponse()
+        response2.status_code = 200
+        response2.text = (
+            '<html>'
+            '    <div id="mw-content-text">'
+            '        <p>Snowden is former CIA employee.</p>'
+            '    </div>'
+            '</html>'
+        )
+
+        mock_requests.get.side_effect = [response1, response2]
+
         payload = {
             'update_id': 12345,
             'message': {
                 'message_id': 100,
-                'text': '/wiki tulul',
+                'text': '/leli snowden',
                 'chat': {
                     'id': 1
                 }
@@ -104,47 +143,34 @@ def test_wiki_command_with_term_whose_article_cannot_be_found(app):
         }
         rv = app.post('/', data=json.dumps(payload),
                       content_type='application/json')
+
+        assert mock_requests.get.call_args_list == [
+            call('https://en.wikipedia.org/w/index.php?search=snowden'),
+            call('https://en.wikipedia.org/wiki/link1')
+        ]
+
         assert rv.status_code == 200
         json_response = json.loads(rv.get_data(as_text=True))
         assert json_response['method'] == 'sendMessage'
         assert json_response['chat_id'] == 1
-        assert json_response['text'] == 'Gak ada artikelnya. Jangan nge-lely.'
+        assert json_response['text'] == 'Snowden is former CIA employee.'
         assert json_response['disable_web_page_preview'] == 'false'
         assert json_response['reply_to_message_id'] == 100
 
 
-def test_wiki_command_but_other_error_happens(app):
-    with patch('tululbot.requests') as mock_requests:
-        mock_requests.get.return_value.status_code = 500
-        payload = {
-            'update_id': 12345,
-            'message': {
-                'message_id': 100,
-                'text': '/wiki tulul',
-                'chat': {
-                    'id': 1
-                }
-            }
-        }
-        rv = app.post('/', data=json.dumps(payload),
-                      content_type='application/json')
-        assert rv.status_code == 200
-        json_response = json.loads(rv.get_data(as_text=True))
-        assert json_response['method'] == 'sendMessage'
-        assert json_response['chat_id'] == 1
-        assert json_response['text'] == 'Shit happens...'
-        assert json_response['disable_web_page_preview'] == 'false'
-        assert json_response['reply_to_message_id'] == 100
-
-
-def test_wiki_command_with_two_words_term(app):
+def test_leli_command_with_term_resorted_on_google(app):
     with patch('tululbot.requests') as mock_requests:
         mock_requests.get.return_value.status_code = 200
+        mock_requests.get.return_value.text = (
+            '<html>'
+            '<h1>Search results</h1>'
+            '</html>'
+        )
         payload = {
             'update_id': 12345,
             'message': {
                 'message_id': 100,
-                'text': '/wiki too lulz',
+                'text': '/leli wazaundtechnik',
                 'chat': {
                     'id': 1
                 }
@@ -152,53 +178,41 @@ def test_wiki_command_with_two_words_term(app):
         }
         rv = app.post('/', data=json.dumps(payload),
                       content_type='application/json')
+
+        mock_requests.get.assert_called_once_with(
+            'https://en.wikipedia.org/w/index.php?search=wazaundtechnik'
+        )
+
         assert rv.status_code == 200
         json_response = json.loads(rv.get_data(as_text=True))
         assert json_response['method'] == 'sendMessage'
         assert json_response['chat_id'] == 1
-        assert json_response['text'] == 'http://en.wikipedia.org/wiki/too_lulz'
+        assert json_response['text'] == (
+            'Jangan ngeleli! Googling dong: '
+            'https://google.com/search?q=wazaundtechnik'
+        )
         assert json_response['disable_web_page_preview'] == 'false'
         assert json_response['reply_to_message_id'] == 100
 
 
-def test_ngelely_command_with_no_term(app):
-    payload = {
-        'update_id': 12345,
-        'message': {
-            'message_id': 100,
-            'text': '/ngelely',
-            'chat': {
-                'id': 1
+def test_leli_command_with_multiword_term(app):
+    with patch('tululbot.requests') as mock_requests:
+        payload = {
+            'update_id': 12345,
+            'message': {
+                'message_id': 100,
+                'text': '/leli waza und technik',
+                'chat': {
+                    'id': 1
+                }
             }
         }
-    }
-    rv = app.post('/', data=json.dumps(payload),
-                  content_type='application/json')
-    assert rv.status_code == 200
-    assert rv.get_data(as_text=True) == 'Nothing to do here...'
+        app.post('/', data=json.dumps(payload),
+                 content_type='application/json')
 
-
-def test_ngelely_command_with_term(app):
-    payload = {
-        'update_id': 12345,
-        'message': {
-            'message_id': 100,
-            'text': '/ngelely too lulz',
-            'chat': {
-                'id': 1
-            }
-        }
-    }
-    rv = app.post('/', data=json.dumps(payload),
-                  content_type='application/json')
-    assert rv.status_code == 200
-    json_response = json.loads(rv.get_data(as_text=True))
-    assert json_response['method'] == 'sendMessage'
-    assert json_response['chat_id'] == 1
-    assert json_response['text'] == ('Jangan nge-lely\n'
-                                     'https://www.google.co.id/#q=too+lulz')
-    assert json_response['disable_web_page_preview'] == 'false'
-    assert json_response['reply_to_message_id'] == 100
+        mock_requests.get.assert_called_once_with(
+            'https://en.wikipedia.org/w/index.php?search=waza+und+technik'
+        )
 
 
 def test_who_command(app):
