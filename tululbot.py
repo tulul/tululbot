@@ -43,7 +43,10 @@ def create_app(config_dict):
                 return 'may refer to:' in paragraph
 
             def parse_first_disambiguation_link(page):
-                path = parse_content_text(page).find('ul').find('a')['href']
+                def valid_link(tag):
+                    return tag.name == 'a' and tag['href'].startswith('/wiki')
+
+                path = parse_content_text(page).find(valid_link)['href']
                 return 'https://en.wikipedia.org{}'.format(path)
 
             query_string = urlencode(dict(search=term))
