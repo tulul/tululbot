@@ -233,10 +233,10 @@ def test_who_command(app):
     assert json_response['method'] == 'sendMessage'
     assert json_response['chat_id'] == 1
     expected_text = (
-        'telebot untuk tulul :v\n'
-        'dibuat dengan Python 3.4 dan cinta\n'
-        'baru bisa ngewiki dan ngelely doang\n'
-        'kontribusi di https://github.com/tulul/tululbot'
+        'TululBot v0.1.0\n\n'
+        'Enhancing your tulul experience since 2015\n\n'
+        'Contribute on https://github.com/tulul/tululbot\n\n'
+        "We're hiring! Contact @iqbalmineraltown for details"
     )
     assert json_response['text'] == expected_text
     assert json_response['disable_web_page_preview'] == 'false'

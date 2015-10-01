@@ -105,10 +105,10 @@ def create_app(config_dict):
                     return reply(leli(term))
                 elif text == '/who':
                     about_text = (
-                        'telebot untuk tulul :v\n'
-                        'dibuat dengan Python 3.4 dan cinta\n'
-                        'baru bisa ngewiki dan ngelely doang\n'
-                        'kontribusi di https://github.com/tulul/tululbot'
+                        'TululBot v0.1.0\n\n'
+                        'Enhancing your tulul experience since 2015\n\n'
+                        'Contribute on https://github.com/tulul/tululbot\n\n'
+                        "We're hiring! Contact @iqbalmineraltown for details"
                     )
                     return reply(about_text)
         return 'Nothing to do here...'
