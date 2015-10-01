@@ -2,9 +2,9 @@
 
 ## User Guide
 ### Command List
-**/ngelely**\<space\>\<keywords\> - Returns google search with given keywords
+**/leli**\<space\>\<keywords_separated_with_space\> - Returns search result with given keywords
 
-**/wiki**\<space\>\<keywords\> - Try to return wiki page with given keywords
+**/quote** - Get random quote from [our database](https://github.com/tulul/tulul-quotes)
 
 **/who** - Know your tululbot
 
