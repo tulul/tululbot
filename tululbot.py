@@ -30,14 +30,15 @@ def create_app(config_dict):
         """
 
         def search_on_wikipedia():
-            def has_result(page):
-                return 'Search results' not in page
-
             def parse_content_text(page):
                 return BeautifulSoup(page).find('div', id='mw-content-text')
 
             def parse_first_paragraph(page):
-                return parse_content_text(page).find('p').get_text()
+                return parse_content_text(page).find('p')
+
+            def has_result(page):
+                return ('Search results' not in page and
+                        parse_first_paragraph(page) is not None)
 
             def has_disambiguations(paragraph):
                 return 'may refer to:' in paragraph
@@ -62,8 +63,8 @@ def create_app(config_dict):
                 return None
 
             first_paragraph = parse_first_paragraph(page)
-            if not has_disambiguations(first_paragraph):
-                return first_paragraph
+            if not has_disambiguations(first_paragraph.get_text()):
+                return first_paragraph.get_text()
 
             disambiguation_url = parse_first_disambiguation_link(page)
 
@@ -72,7 +73,7 @@ def create_app(config_dict):
                 return None
 
             disambiguated_page = response.text
-            return parse_first_paragraph(disambiguated_page)
+            return parse_first_paragraph(disambiguated_page).get_text()
 
         def search_on_google():
             query_string = urlencode(dict(q=term))
