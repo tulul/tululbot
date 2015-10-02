@@ -1,5 +1,7 @@
 # TululBot ![TululBot Build Status](https://travis-ci.org/tulul/tululbot.svg)
 
+![TululBot Command Preview](https://cdn.rawgit.com/tulul/tululbot/master/assets/img/preview.gif)
+
 ## User Guide
 ### Command List
 **/leli**\<space\>\<keywords_separated_with_space\> - Returns search result with given keywords
