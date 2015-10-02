@@ -95,12 +95,13 @@ def create_app(config_dict):
             chat_id = message['chat']['id']
             app.logger.debug('chat_id is %s', chat_id)
 
-            def reply(reply_text):
+            def reply(reply_text, disable_preview=False):
                 payload = {
                     'method': 'sendMessage',
                     'chat_id': chat_id,
                     'text': reply_text,
-                    'disable_web_page_preview': 'false',
+                    'disable_web_page_preview': 'true' \
+                        if disable_preview else 'false',
                     'reply_to_message_id': message['message_id']
                 }
                 return jsonify(**payload)
@@ -110,7 +111,7 @@ def create_app(config_dict):
                     term = text[6:]
                     if not term:
                         return reply('Apa yang mau dileli?')
-                    return reply(leli(term))
+                    return reply(leli(term), True)
                 elif text.startswith('/quote'):
                     return reply(quote_engine.retrieve_random())
                 elif text == '/who':
@@ -120,7 +121,7 @@ def create_app(config_dict):
                         'Contribute on https://github.com/tulul/tululbot\n\n'
                         "We're hiring! Contact @iqbalmineraltown for details"
                     )
-                    return reply(about_text)
+                    return reply(about_text, True)
         return 'Nothing to do here...'
 
     return app

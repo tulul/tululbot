@@ -97,7 +97,7 @@ def test_leli_command_with_term_found_on_wikipedia(app):
         assert json_response['method'] == 'sendMessage'
         assert json_response['chat_id'] == 1
         assert json_response['text'] == 'Tulul is the synonym of cool.'
-        assert json_response['disable_web_page_preview'] == 'false'
+        assert json_response['disable_web_page_preview'] == 'true'
         assert json_response['reply_to_message_id'] == 100
 
 
@@ -154,7 +154,7 @@ def test_leli_command_with_ambiguous_term_on_wikipedia(app):
         assert json_response['method'] == 'sendMessage'
         assert json_response['chat_id'] == 1
         assert json_response['text'] == 'Snowden is former CIA employee.'
-        assert json_response['disable_web_page_preview'] == 'false'
+        assert json_response['disable_web_page_preview'] == 'true'
         assert json_response['reply_to_message_id'] == 100
 
 
@@ -191,7 +191,7 @@ def test_leli_command_with_term_resorted_on_google(app):
             'Jangan ngeleli! Googling dong: '
             'https://google.com/search?q=wazaundtechnik'
         )
-        assert json_response['disable_web_page_preview'] == 'false'
+        assert json_response['disable_web_page_preview'] == 'true'
         assert json_response['reply_to_message_id'] == 100
 
 
@@ -264,5 +264,5 @@ def test_who_command(app):
         "We're hiring! Contact @iqbalmineraltown for details"
     )
     assert json_response['text'] == expected_text
-    assert json_response['disable_web_page_preview'] == 'false'
+    assert json_response['disable_web_page_preview'] == 'true'
     assert json_response['reply_to_message_id'] == 100
