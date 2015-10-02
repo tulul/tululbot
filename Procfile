@@ -1,1 +1,1 @@
-web: gunicorn tululbot:default_app --log-file -
+web: gunicorn tululbot:app --log-file -

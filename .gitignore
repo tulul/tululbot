@@ -58,3 +58,6 @@ target/
 
 # Ctags file
 tags
+
+# dotenv file
+.env

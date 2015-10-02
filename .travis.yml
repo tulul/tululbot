@@ -2,11 +2,16 @@ sudo: false
 language: python
 python:
   - "3.4"
+env:
+  global:
+    - DEBUG="false"
+    - TELEGRAM_BOT_TOKEN="somerandomstring"
+    - LOG_LEVEL="WARNING"
 install:
   # Build/test dependencies
   - pip install -r requirements.txt
 script:
   # Linting
-  - flake8 *.py
+  - flake8
   # Run tests
   - py.test
