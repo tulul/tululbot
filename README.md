@@ -45,7 +45,7 @@
    pip install -r requirements.txt
    ```
 
-   Dependencies are all listed in `requirements.txt`. To generate this file, simply run `pip freeze > requirements.txt`.
+   Dependencies are all listed in `requirements.txt`. To generate this file, simply run `pip freeze > requirements.txt`. If you have a problem installing the dependencies (PyYaml in particular), install the package `python3-dev` first.
 
 1. Before running the app, you have to set environment variables. Those variables will be used to configure the app. Again, there are many ways to do this and one of them is to use virtualenv's `postactivate` and `predeactivate` hook.
 
@@ -70,7 +70,7 @@
 
 1. The app is now running! Try to play around with it by simulating a webhook request. For instance, try this:
    ```bash
-   curl --data '{"update_id": 12345,"message":{"text":"/wiki potus","chat":{"id":-12345},"message_id":1}}' --header "Content-Type: application/json" http://127.0.0.1:5000/somerandomstring
+   curl --data '{"update_id": 12345,"message":{"text":"/who","chat":{"id":-12345},"message_id":1}}' --header "Content-Type: application/json" http://127.0.0.1:5000/somerandomstring
    ```
 
    As you can see, the url endpoint is determined by the `TELEGRAM_BOT_TOKEN` config var. This is actually [recommended by Telegram](https://core.telegram.org/bots/api#setwebhook).
