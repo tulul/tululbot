@@ -100,8 +100,8 @@ def create_app(config_dict):
                     'method': 'sendMessage',
                     'chat_id': chat_id,
                     'text': reply_text,
-                    'disable_web_page_preview': 'true' \
-                        if disable_preview else 'false',
+                    'disable_web_page_preview':
+                        'true' if disable_preview else 'false',
                     'reply_to_message_id': message['message_id']
                 }
                 return jsonify(**payload)
