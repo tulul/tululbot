@@ -5,13 +5,22 @@ python:
 env:
   global:
     - DEBUG="false"
-    - TELEGRAM_BOT_TOKEN="somerandomstring"
     - LOG_LEVEL="WARNING"
+    # Encrypted TULULBOT_DEVEL_CHAT_ID
+    - secure: "0spH4nLvq8gr/XfuP0VZSV4zOCwtwyBUhuTCoDTgo+5AGOzXRsYWk6ABBXtcbhaM0bFNRCv06bEACwt2DYI+o7f/21RdYPEP5PSbNoC8R7Gxeywms2C9TJjO2DHR0heVOSHOWsGtYNmBBm5Mj0UB+dJ0dWog1dwE/uhCppXs1eeznHqz7IAXNAHKVSg16edA6ktQhuI/nb3pUKkHtWUa8LZcMPD3sjtc603kvlgHeRwuaIZo/dJQHqUjDkvWmxrReJ/7Pdfr/ih1+yOHTksu8Q9QAgNz5Dbq/LJD2Sb/PYDycfPPYQkVeLzZlScbiJVUGsX2O58XtMK9px6S090Z2A63YVJKbGgAoXjF1DpV7JeZdVpzIl/QcuFCyHoT49LUMURGwCm6K6MH+XSBetDEXwj9JKqDh5+KxmdyjidGt8+xXZBWRkuZAU7Yg5Q/ZVL/QP28i2Sef2Yx0MVzzkhjqi8uHoySPM3Bt1MN8X5l8PYFmVDAtL14bDyZSp7yIrtskCSiA7y/R3FsnfCfJrPPxqWYsDnXkn4rxTW9g5X6n4t4X5VecPjoqmuO1IAexhHNZZHn/NE4mPAyGk+1ri5KwQ5PjzcJnvhgsVSKHU0akhoiklQy+4zpKdhiZWT1DEXUh2PdKv78N8NywQvic0/iy8QZ34ShepQXZI2s7aF7Mz8="
+    # Encrypted TELEGRAM_BOT_TOKEN
+    - secure: "sZljGJ54nF6NAjEcVLSLvHQs/u9ZSSrIDVaQwY7ajUZcHq/23jnhoyztp3t5EQn7I+Q7RSFbnrbZLrKb0aDk0f/gg/iBwHKUpc6epEJ88gXEz5ktbK0McOSEGqO1hd9tyEaMhO/Wg1eiOKu3p3VaVT9b5ToJi/Q4BtpqKDry/WVAk593xdiOlL9Na7DfuTdziFPvYSnPVeLZFnoPA4dS5CvyraCSaRGzPZ3A2kiWssi1EM7i2DEVUcvivW1ZOT+J6uIzD9EoMKRySdGn+bPZBTV19eUJPPJMAjhMwgkr0Ye3urnOr1MRcrKYlu0WC8SYCL+0LkhUip52iAel0PxMbfw3xyQTa+8tko5gqz5IC38SJ50DHTUfo7t8ogi49kDNfXajJM21xsapAM1TPRlzBI7XQLZAg+5dGZNV1TkvOT8t7D6xNjgx6xQhxczZHbMSPDJfImaUqNxNDewL6tpPp+PvszZgXKXK9B2lsftKk0csTGCy00z/NAr2+36ECHv5hzs5KDdrMPd8JDYRNbXgL4yM9Tz8bs6aDKxMxgjiLe1PpbX7MbKOxTFGKSQ0ZCU+ZNYxdrWONSdlsF+9y1LGzJUCsxApxBE5uZWIpZHAtJznKwTWZiXNvjtoumL7yUh64iM3OFijH1oYxdyJ1aevH9QKeTopBmXOU349KJ3C7wM="
 install:
-  # Build/test dependencies
+  # Install dependencies
   - pip install -r requirements.txt
 script:
-  # Linting
+  # Run linters
   - flake8
   # Run tests
   - py.test
+after_success:
+  # Only notify if it's master branch and not a PR
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then python manage.py notify "Build $TRAVIS_BUILD_NUMBER on branch $TRAVIS_BRANCH succeeded <3 <3 <3"; fi
+after_failure:
+  # Only notify if it's master branch and not a PR
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then python manage.py notify "Build $TRAVIS_BUILD_NUMBER on branch $TRAVIS_BRANCH failed!!! See https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID"; fi

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import code
+from os import environ
 from os.path import join, dirname
 import subprocess
 import sys
@@ -8,6 +9,7 @@ import sys
 import click
 from dotenv import load_dotenv
 import pytest
+import requests
 
 
 def load_app():
@@ -69,6 +71,24 @@ def check():
     load_dotenv(dotenv_path)
 
     sys.exit(subprocess.call(['flake8']) or pytest.main([]))
+
+
+@manage.command()
+@click.argument('message')
+def notify(message):
+    """Send notification to TululBot developers group."""
+    token = environ['TELEGRAM_BOT_TOKEN']
+    telegram_bot_api_url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
+    payload = {
+        'chat_id': environ['TULULBOT_DEVEL_CHAT_ID'],
+        'text': message
+    }
+    resp = requests.post(telegram_bot_api_url, data=payload)
+    res = resp.json()
+    if res['ok']:
+        print('Notification successfully sent')
+    else:
+        print('ERROR:', res['description'], file=sys.stderr)
 
 
 if __name__ == '__main__':
