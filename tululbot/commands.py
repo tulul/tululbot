@@ -24,7 +24,6 @@ from .utils import QuoteEngine
 dispatcher = CommandDispatcher()
 
 quote_engine = QuoteEngine()
-quote_engine.refresh_cache()
 
 
 @dispatcher.command(r'^/leli (?P<term>.+)$')
@@ -95,6 +94,7 @@ def leli(term):
 
 @dispatcher.command(r'^/quote$')
 def quote():
+    quote_engine.refresh_cache_if_applicable()
     return quote_engine.retrieve_random()
 
 

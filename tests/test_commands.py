@@ -124,6 +124,7 @@ class TestLeliCommand:
 
 def test_quote():
     with patch('tululbot.commands.quote_engine') as mock_engine:
+        mock_engine.refresh_cache_if_applicable.return_value = False
         mock_engine.retrieve_random.return_value = 'some random quote'
         rv = quote()
         assert rv == 'some random quote'
