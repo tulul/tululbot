@@ -13,14 +13,19 @@ env:
 install:
   # Install dependencies
   - pip install -r requirements.txt
+before_script:
+  # Set some variables for build status notification
+  - export COMMITTER_NAME=`git log -n 1 --pretty='%cn'`
+  - export BUILD_URL="https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID"
 script:
   # Run linters
   - flake8
   # Run tests
   - py.test
 after_success:
-  # Only notify if it's master branch and not a PR
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then python manage.py notify "Build $TRAVIS_BUILD_NUMBER on branch $TRAVIS_BRANCH succeeded <3 <3 <3"; fi
+  - export BUILD_STATUS="succeeded <3 <3 <3"
 after_failure:
+  - export BUILD_STATUS="failed!!!"
+after_script:
   # Only notify if it's master branch and not a PR
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then python manage.py notify "Build $TRAVIS_BUILD_NUMBER on branch $TRAVIS_BRANCH failed!!! See https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID"; fi
+  - if [ "$TRAVIS_REPO_SLUG" = "tulul/tululbot" -a "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then python manage.py notify "Build $TRAVIS_BUILD_NUMBER on branch $TRAVIS_BRANCH by $COMMITTER_NAME $BUILD_STATUS See $BUILD_URL"; fi
