@@ -9,7 +9,6 @@ import sys
 import click
 from dotenv import load_dotenv
 import pytest
-import requests
 
 
 def load_app():
@@ -30,7 +29,9 @@ def manage():
 @manage.command()
 def shell():
     """Run a shell with custom context."""
-    context = dict(app=load_app())
+    app = load_app()
+    from tululbot import bot
+    context = dict(app=app, bot=bot)
     try:
         from IPython import embed
     except ImportError:
@@ -77,18 +78,9 @@ def check():
 @click.argument('message')
 def notify(message):
     """Send notification to TululBot developers group."""
-    token = environ['TELEGRAM_BOT_TOKEN']
-    telegram_bot_api_url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
-    payload = {
-        'chat_id': environ['TULULBOT_DEVEL_CHAT_ID'],
-        'text': message
-    }
-    resp = requests.post(telegram_bot_api_url, data=payload)
-    res = resp.json()
-    if res['ok']:
-        print('Notification successfully sent')
-    else:
-        print('ERROR:', res['description'], file=sys.stderr)
+    from tululbot import bot
+    chat_id = environ['TULULBOT_DEVEL_CHAT_ID']
+    bot.send_message(chat_id, message)
 
 
 if __name__ == '__main__':
