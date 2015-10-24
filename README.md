@@ -1,4 +1,4 @@
-# TululBot ![TululBot Build Status](https://travis-ci.org/tulul/tululbot.svg)
+# TululBot ![TululBot Build Status](https://travis-ci.org/tulul/tululbot.svg) [![Stories in Ready](https://badge.waffle.io/tulul/tululbot.png?label=ready&title=Ready)](https://waffle.io/tulul/tululbot)
 
 ![TululBot Command Preview](https://cdn.rawgit.com/tulul/tululbot/master/assets/img/preview.gif)
 
