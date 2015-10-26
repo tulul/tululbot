@@ -1,8 +1,15 @@
-import datetime
+from datetime import datetime
 import random
 
 import requests
 import yaml
+
+
+class TimeHelper:
+
+    @classmethod
+    def now():
+        return datetime.datetime.now()
 
 
 class QuoteEngine:
@@ -20,7 +27,7 @@ class QuoteEngine:
 
         self._cache = []
 
-        # URI refresh per interval
+        # URI refresh per interval in seconds
         self._refresh_interval = 5 * 60
         # Dummy date. Must be old enough (just to trigger)
         # the uri must be refreshed on the first call
@@ -34,7 +41,7 @@ class QuoteEngine:
         return '{q[quote]} - {q[author]}, {q[author_bio]}'.format(q=q)
 
     def refresh_cache_if_applicable(self):
-        if (!self.refresh_url_if_applicable()):
+        if (self.refresh_url_if_applicable() == False):
             return False
 
         body = requests.get(self._quote_url).text
@@ -46,23 +53,23 @@ class QuoteEngine:
         return True
 
     def refresh_url_if_applicable(self):
-        now = datetime.datetime.now()
+        now = TimeHelper.now()
         delta = now - self._last_refresh
 
         if (delta.seconds < self._refresh_interval):
             return False
 
-        req = requests.get(self._git_branch_check_url)
+        res = requests.get(self._git_branch_check_url)
 
         # Don't care broken request
-        if (!x.ok):
+        if (res.ok == False):
             return False
 
-        json = req.get_json()
+        json = res.get_json()
         sha = json['commit']['sha']
         self._quote_url = 'https://cdn.rawgit.com/tulul/tulul-quotes/%s/quote.yaml'.format(sha)
 
-        self._refresh_interval = now
+        self._last_refresh = now
 
         return True
 

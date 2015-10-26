@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from unittest.mock import patch
 
@@ -36,52 +37,42 @@ def qe():
     return QuoteEngine()
 
 def test_refresh_time(qe):
-    with patch('tululbot.tils.datetime.datetime') as mock_dt:
+    with patch('tululbot.utils.TimeHelper') as mock_dt:
         with patch('tululbot.utils.requests') as mock_requests:
             class FakeResponse:
+                def get_json(self):
+                    return self.json
+
                 pass
 
             response1 = FakeResponse()
             response1.status_code = 200
-            response1.text = (
-                '{'
-                '    "commit": {'
-                '        "sha": "beefbeef"'
-                '    }'
-                '}'
-            )
+            response1.json = {
+                "commit": {
+                        "sha": "beefbeef"
+                    }
+                }
+
             response1.ok = True
 
-            response2 = FakeResponse()
-            response2.status_code = 200
-            response2.text = (
-                '<html>'
-                '    <div id="mw-content-text">'
-                '        <p>Snowden is former CIA employee.</p>'
-                '    </div>'
-                '</html>'
-            )
+            mock_requests.get.return_value = response1
 
-            mock_requests.get.side_effect = {
-                qe._git_branch_check_url: response1
-            }
-
-            qe.refresh_interval = 5
+            qe._refresh_interval = 5
 
             mock_dt.now.return_value = datetime(2009, 1, 6, 15, 8, 30)
             qe._last_refresh = datetime(2000, 1, 6, 15, 8, 24)
 
-            result = qe.refresh_url_if_applicable
+            result = qe.refresh_url_if_applicable()
             assert result == True
-            result = qe.refresh_url_if_applicable
+            result = qe.refresh_url_if_applicable()
             assert result == False
-            result = qe.refresh_url_if_applicable
+            result = qe.refresh_url_if_applicable()
             assert result == False
 
             qe._last_refresh = datetime(2000, 1, 6, 15, 8, 24)
 
-            result = qe.refresh_url_if_applicable
+            result = qe.refresh_url_if_applicable()
             assert result == True
-            result = qe.refresh_url_if_applicable
+            result = qe.refresh_url_if_applicable()
             assert result == False
 
