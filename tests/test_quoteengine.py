@@ -1,5 +1,4 @@
 from datetime import datetime
-import json
 from unittest.mock import patch
 
 import pytest
@@ -10,7 +9,7 @@ generic_quote_1 = (
     '--- '
     'quotes: '
     '  - q_no: 1'
-    '    quote: "Kenapa kalo mau sahur tiba2 ngantuk? Karena Anda belum punya cinta yang menemani Anda sahur."'
+    '    quote: "Kenapa kalo mau sahur tiba2 ngantuk? Karena Anda belum punya cinta yang menemani Anda sahur."'  # noqa
     '    author: Anang Ferdi'
     '    author_bio: Dokter cinta veteran'
     '    tags: '
@@ -32,9 +31,11 @@ generic_quote_2 = (
     '      - matematika '
 )
 
+
 @pytest.fixture
 def qe():
     return QuoteEngine()
+
 
 def test_refresh_time(qe):
     with patch('tululbot.utils.TimeHelper') as mock_dt:
@@ -49,9 +50,9 @@ def test_refresh_time(qe):
             response1.status_code = 200
             response1.json = {
                 "commit": {
-                        "sha": "beefbeef"
-                    }
+                    "sha": "beefbeef"
                 }
+            }
 
             response1.ok = True
 
@@ -63,16 +64,15 @@ def test_refresh_time(qe):
             qe._last_refresh = datetime(2000, 1, 6, 15, 8, 24)
 
             result = qe.refresh_url_if_applicable()
-            assert result == True
+            assert result is True
             result = qe.refresh_url_if_applicable()
-            assert result == False
+            assert result is False
             result = qe.refresh_url_if_applicable()
-            assert result == False
+            assert result is False
 
             qe._last_refresh = datetime(2000, 1, 6, 15, 8, 24)
 
             result = qe.refresh_url_if_applicable()
-            assert result == True
+            assert result is True
             result = qe.refresh_url_if_applicable()
-            assert result == False
-
+            assert result is False

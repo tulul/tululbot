@@ -41,7 +41,7 @@ class QuoteEngine:
         return '{q[quote]} - {q[author]}, {q[author_bio]}'.format(q=q)
 
     def refresh_cache_if_applicable(self):
-        if (self.refresh_url_if_applicable() == False):
+        if (not self.refresh_url_if_applicable()):
             return False
 
         body = requests.get(self._quote_url).text
@@ -62,7 +62,7 @@ class QuoteEngine:
         res = requests.get(self._git_branch_check_url)
 
         # Don't care broken request
-        if (res.ok == False):
+        if (not res.ok):
             return False
 
         json = res.get_json()
@@ -72,5 +72,3 @@ class QuoteEngine:
         self._last_refresh = now
 
         return True
-
-
