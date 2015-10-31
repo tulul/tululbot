@@ -67,7 +67,7 @@ class QuoteEngine:
 
         json = res.get_json()
         sha = json['commit']['sha']
-        self._quote_url = 'https://cdn.rawgit.com/tulul/tulul-quotes/%s/quote.yaml'.format(sha)
+        self._quote_url = 'https://cdn.rawgit.com/tulul/tulul-quotes/{}/quote.yaml'.format(sha)
 
         self._last_refresh = now
 
