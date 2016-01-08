@@ -7,7 +7,7 @@ import yaml
 class QuoteEngine:
 
     def __init__(self):
-        self._quote_url = 'https://cdn.rawgit.com/tulul/tulul-quotes/master/quote.yaml'  # noqa
+        self._quote_url = 'https://raw.githubusercontent.com/tulul/tulul-quotes/master/quote.yaml'  # noqa
         # Note: rawgit does not have 100% uptime, but at
         # least they're not throttling us.
 
