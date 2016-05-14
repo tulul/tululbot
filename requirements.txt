@@ -20,7 +20,7 @@ pexpect==3.3
 pickleshare==0.5
 py==1.4.30
 pyflakes==0.8.1
-pyTelegramBotAPI==0.3.9
+pyTelegramBotAPI==2.0.5
 pytest==2.8.0
 pytest-cov==2.2.0
 pytest-mock==0.8.1

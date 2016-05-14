@@ -17,7 +17,7 @@ def test_create_message_from_dict(fake_message_dict):
     assert message.chat.id == fake_message_dict['chat']['id']
     assert message.chat.type == fake_message_dict['chat']['type']
     assert message.text == fake_message_dict['text']
-    assert not hasattr(message, 'reply_to_message')
+    assert message.reply_to_message is None
     assert message.from_user is None
 
 

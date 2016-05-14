@@ -76,13 +76,10 @@ class TululBot:
 
     def _is_reply_to_bot_user(self, message):
         self._initialize_bot_user()
-        try:
-            replied_message = message.reply_to_message
-        except AttributeError:
-            return False
-        else:
-            return (replied_message.from_user is not None and
-                    replied_message.from_user.id == self.user.id)
+        replied_message = message.reply_to_message
+        return (replied_message is not None and
+                replied_message.from_user is not None and
+                replied_message.from_user.id == self.user.id)
 
 
 class QuoteEngine:
