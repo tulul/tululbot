@@ -4,13 +4,15 @@
 
 ## User Guide
 ### Command List
-**/leli**\<space\>\<keywords_separated_with_space\> - Returns search result with given keywords
+**/leli** - Returns search result with given keywords
 
 **/quote** - Get random quote from [our database](https://github.com/tulul/tulul-quotes)
 
-**/who** - Know your tululbot
-
 **/slang** - Lookup slang word definition; the result may surprise you!
+
+**/hotline** - Dev group only
+
+**/who** - Know your tululbot
 
 ## Development Guide
 
