@@ -1,6 +1,6 @@
 import pytest
 
-from tululbot.types import Message, Update
+from tululbot.types import Message, Update, User
 
 
 @pytest.fixture
@@ -56,8 +56,14 @@ def fake_update(fake_update_dict):
 
 @pytest.fixture
 def fake_user_dict():
-    """Return a fake, minimalist Telegram user."""
+    """Return a fake, minimalist Telegram user as dict."""
     return {
         'id': 12345,
         'first_name': 'John'
     }
+
+
+@pytest.fixture
+def fake_user(fake_user_dict):
+    """Return a fake, minimalist Telegram user."""
+    return User.from_dict(fake_user_dict)

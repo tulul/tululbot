@@ -1,5 +1,7 @@
 import random
+from urllib.parse import quote_plus
 
+from bs4 import BeautifulSoup
 import requests
 from telebot import TeleBot, types
 import yaml
@@ -9,10 +11,22 @@ class TululBot:
 
     def __init__(self, token):
         self._telebot = TeleBot(token)
-        self.user = None
+        self._user = None
+
+    @property
+    def user(self):
+        if self._user is not None:
+            return self._user
+
+        self._user = self.get_me()
+        return self._user
+
+    @user.setter
+    def user(self, value):
+        self._user = value
 
     def get_me(self):
-        self.user = self._telebot.get_me()
+        return self._telebot.get_me()
 
     def send_message(self, chat_id, text):
         return self._telebot.send_message(chat_id, text)
@@ -66,12 +80,7 @@ class TululBot:
 
         return is_reply_to_bot
 
-    def _initialize_bot_user(self):
-        if self.user is None:
-            self.get_me()
-
     def _is_reply_to_bot_user(self, message):
-        self._initialize_bot_user()
         replied_message = message.reply_to_message
         return (replied_message is not None and
                 replied_message.from_user is not None and
@@ -103,3 +112,15 @@ class QuoteEngine:
         # when we try to get new cache, the network occurs error?
         # We will think about "don't refresh if error" later.
         self._cache = yaml.load(body)['quotes']
+
+
+def lookup_slang(word):
+    kamusslang_url_format = 'http://kamusslang.com/arti/{}'
+    url = kamusslang_url_format.format(quote_plus(word))
+    r = requests.get(url)
+
+    if not r.ok:
+        return "Koneksi lagi bapuk nih :'("
+
+    paragraph = BeautifulSoup(r.text, 'html.parser').find(class_='term-def')
+    return ''.join(paragraph.stripped_strings) if paragraph is not None else 'Gak nemu cuy'

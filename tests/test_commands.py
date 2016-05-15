@@ -1,6 +1,6 @@
-from unittest.mock import call
+from unittest.mock import call, MagicMock
 
-from tululbot.commands import leli, quote, who
+from tululbot.commands import leli, quote, who, slang
 
 
 class TestLeliCommand:
@@ -127,7 +127,7 @@ def test_who(fake_message, mocker):
     who(fake_message)
 
     expected_text = (
-        'TululBot v1.0.1\n\n'
+        'TululBot v1.1.1\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
@@ -135,3 +135,59 @@ def test_who(fake_message, mocker):
     mock_reply_to.assert_called_once_with(
         fake_message, expected_text, disable_preview=True
     )
+
+
+def test_slang(fake_message, fake_user, mocker):
+    class FakeBot:
+        def __init__(self):
+            self.user = fake_user
+            self.reply_to = MagicMock()
+
+    fake_bot = FakeBot()
+    slang_word = 'hohoi ahoi'
+    fake_message.text = '/slang {}'.format(slang_word)
+    slang_lookup_result = 'hahaha'
+    mocker.patch('tululbot.commands.bot', new=fake_bot)
+    mock_lookup_slang = mocker.patch('tululbot.commands.lookup_slang',
+                                     return_value=slang_lookup_result)
+
+    slang(fake_message)
+
+    mock_lookup_slang.assert_called_once_with(slang_word)
+    fake_bot.reply_to.assert_called_once_with(fake_message, slang_lookup_result)
+
+
+def test_slang_with_bot_name(fake_message, fake_user, mocker):
+    class FakeBot:
+        def __init__(self):
+            self.user = fake_user
+            self.reply_to = MagicMock()
+
+    fake_bot = FakeBot()
+    slang_word = 'hohoi'
+    fake_message.text = '/slang@{} {}'.format(fake_bot.user.first_name, slang_word)
+    slang_lookup_result = 'hahaha'
+    mocker.patch('tululbot.commands.bot', new=fake_bot)
+    mock_lookup_slang = mocker.patch('tululbot.commands.lookup_slang',
+                                     return_value=slang_lookup_result)
+
+    slang(fake_message)
+
+    mock_lookup_slang.assert_called_once_with(slang_word)
+    fake_bot.reply_to.assert_called_once_with(fake_message, slang_lookup_result)
+
+
+def test_slang_no_word(fake_message, fake_user, mocker):
+    class FakeBot:
+        def __init__(self):
+            self.user = fake_user
+            self.reply_to = MagicMock()
+
+    fake_bot = FakeBot()
+    fake_message.text = '/slang'
+    mocker.patch('tululbot.commands.bot', new=fake_bot)
+
+    slang(fake_message)
+
+    fake_bot.reply_to.assert_called_once_with(fake_message, 'Apa yang mau dicari jir?',
+                                              force_reply=True)

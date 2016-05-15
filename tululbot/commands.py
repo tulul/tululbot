@@ -1,10 +1,11 @@
+import re
 from urllib.parse import urlencode
 
 from bs4 import BeautifulSoup
 import requests
 
 from . import app, bot
-from .utils import QuoteEngine
+from .utils import QuoteEngine, lookup_slang
 
 
 quote_engine = QuoteEngine()
@@ -35,7 +36,7 @@ def quote(message):
 def who(message):
     app.logger.debug('Detected as who command')
     about_text = (
-        'TululBot v1.0.1\n\n'
+        'TululBot v1.1.1\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
@@ -43,9 +44,33 @@ def who(message):
     return bot.reply_to(message, about_text, disable_preview=True)
 
 
+@bot.message_handler(is_reply_to_bot='Apa yang mau dicari jir?')
+@bot.message_handler(commands=['slang'])
+def slang(message):
+    app.logger.debug('Detected as slang command')
+    word = _extract_slang_word(message)
+
+    if word is None:
+        return bot.reply_to(message, 'Apa yang mau dicari jir?', force_reply=True)
+    else:
+        slang_definition = lookup_slang(word)
+        return bot.reply_to(message, slang_definition)
+
+
 def _extract_leli_term(message):
     assert message.text is not None
     return message.text[6:] if message.text.startswith('/leli') else message.text
+
+
+def _extract_slang_word(message):
+    assert message.text is not None
+
+    if message.text.startswith('/slang'):
+        regexp = r'/slang(@{})? (?P<word>.+)$'.format(bot.user.first_name)
+        match = re.match(regexp, message.text)
+        return match.groupdict()['word'] if match is not None else None
+    else:
+        return message.text
 
 
 def _search_on_wikipedia(term):
