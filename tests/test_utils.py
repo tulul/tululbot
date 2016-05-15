@@ -200,11 +200,11 @@ class TestTululBot:
 
 
 def test_lookup_slang(mocker):
-    stripped_strings = ['asdf', 'alsjdf', 'kfdg']
+    strings = ['asdf', 'alsjdf', 'kfdg']
 
     class FakeParagraph:
         def __init__(self):
-            self.stripped_strings = stripped_strings
+            self.strings = strings
 
     class FakeBeautifulSoup:
         def find(*args, **kwargs):
@@ -215,7 +215,7 @@ def test_lookup_slang(mocker):
 
     rv = lookup_slang('jdflafj')
 
-    assert rv == ''.join(stripped_strings)
+    assert rv == ''.join(strings)
 
 
 def test_lookup_slang_no_definition_found(mocker):

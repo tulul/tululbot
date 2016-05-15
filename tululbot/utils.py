@@ -126,4 +126,4 @@ def lookup_slang(word):
         return "Koneksi lagi bapuk nih :'("
 
     paragraph = BeautifulSoup(r.text, 'html.parser').find(class_='term-def')
-    return ''.join(paragraph.stripped_strings) if paragraph is not None else 'Gak nemu cuy'
+    return ''.join(paragraph.strings) if paragraph is not None else 'Gak nemu cuy'
