@@ -118,6 +118,7 @@ class QuoteEngine:
 
 
 def lookup_slang(word):
+    not_found_word = 'Gak nemu cuy'
     kamusslang_url_format = 'http://kamusslang.com/arti/{}'
     url = kamusslang_url_format.format(quote_plus(word))
     r = requests.get(url)
@@ -125,5 +126,11 @@ def lookup_slang(word):
     if not r.ok:
         return "Koneksi lagi bapuk nih :'("
 
-    paragraph = BeautifulSoup(r.text, 'html.parser').find(class_='term-def')
-    return ''.join(paragraph.strings) if paragraph is not None else 'Gak nemu cuy'
+    doc = BeautifulSoup(r.text, 'html.parser')
+    paragraph = doc.find(class_='term-def')
+
+    # Prevent word-alike suggestion
+    if doc.find(class_='close-word-suggestion-text') is not None:
+        return not_found_word
+
+    return ''.join(paragraph.strings) if paragraph is not None else not_found_word

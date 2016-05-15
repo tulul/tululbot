@@ -200,18 +200,21 @@ class TestTululBot:
 
 
 def test_lookup_slang(mocker):
-    strings = ['asdf', 'alsjdf', 'kfdg']
-
     class FakeParagraph:
-        def __init__(self):
+        def __init__(self, strings):
             self.strings = strings
 
-    class FakeBeautifulSoup:
-        def find(*args, **kwargs):
-            return FakeParagraph()
+    strings = ['asdf', 'alsjdf', 'kfdg']
+
+    side_effect_pair = {'close-word-suggestion-text': None,
+                        'term-def': FakeParagraph(strings)}
+
+    class FakeSoup:
+        def find(self, class_):
+            return side_effect_pair[class_]
 
     mocker.patch('tululbot.utils.requests.get')
-    mocker.patch('tululbot.utils.BeautifulSoup', return_value=FakeBeautifulSoup())
+    mocker.patch('tululbot.utils.BeautifulSoup', return_value=FakeSoup())
 
     rv = lookup_slang('jdflafj')
 
@@ -219,12 +222,36 @@ def test_lookup_slang(mocker):
 
 
 def test_lookup_slang_no_definition_found(mocker):
-    class FakeBeautifulSoup:
-        def find(*args, **kwargs):
-            return None
+    side_effect_pair = {'close-word-suggestion-text': None,
+                        'term-def': None}
+
+    class FakeSoup:
+        def find(self, class_):
+            return side_effect_pair[class_]
 
     mocker.patch('tululbot.utils.requests.get')
-    mocker.patch('tululbot.utils.BeautifulSoup', return_value=FakeBeautifulSoup())
+    mocker.patch('tululbot.utils.BeautifulSoup', return_value=FakeSoup())
+
+    rv = lookup_slang('jdflafj')
+
+    assert rv == 'Gak nemu cuy'
+
+
+def test_lookup_slang_no_wrong_suggestion(mocker):
+    class FakeParagraph:
+        def __init__(self, strings):
+            self.strings = strings
+
+    strings = ['asdf', 'alsjdf', 'kfdg']
+    side_effect_pair = {'close-word-suggestion-text': 'Apalah',
+                        'term-def': FakeParagraph(strings)}
+
+    class FakeSoup:
+        def find(self, class_):
+            return side_effect_pair[class_]
+
+    mocker.patch('tululbot.utils.requests.get')
+    mocker.patch('tululbot.utils.BeautifulSoup', return_value=FakeSoup())
 
     rv = lookup_slang('jdflafj')
 
