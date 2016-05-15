@@ -37,6 +37,19 @@ def test_send_message(mocker):
     mock_send_message.assert_called_once_with(chat_id, text)
 
 
+def test_set_webhook(mocker):
+    bot = TululBot('TOKEN')
+    return_value = 'some return value'
+    webhook_url = 'some url'
+    mock_set_webhook = mocker.patch.object(bot._telebot, 'set_webhook',
+                                           return_value=return_value, autospec=True)
+
+    rv = bot.set_webhook(webhook_url)
+
+    assert rv == return_value
+    mock_set_webhook.assert_called_once_with(webhook_url)
+
+
 def test_reply_to(mocker, fake_message):
     bot = TululBot('TOKEN')
     return_value = 'some return value'

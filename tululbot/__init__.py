@@ -12,12 +12,13 @@ from .types import Update
 
 
 # Why do this? See https://core.telegram.org/bots/api#setwebhook
-base_path = '/{}'.format(app.config['TELEGRAM_BOT_TOKEN'])
+webhook_url_path = '/{}'.format(app.config['TELEGRAM_BOT_TOKEN'])
+webhook_url_base = app.config['WEBHOOK_HOST']
 
 app.logger.setLevel(app.config['LOG_LEVEL'])
 
 
-@app.route(base_path, methods=['POST'])
+@app.route(webhook_url_path, methods=['POST'])
 def main():
     if request.headers.get('content-type') == 'application/json':
         update = Update.from_dict(request.get_json())
@@ -35,3 +36,7 @@ def handle_uncaught_exception(error):
         bot.send_message(chat_id, traceback.format_exc())
 
     return 'OK'
+
+
+if app.config['APP_ENV'] != 'development':
+    bot.set_webhook('{}{}'.format(webhook_url_base, webhook_url_path))

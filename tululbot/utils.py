@@ -17,6 +17,9 @@ class TululBot:
     def send_message(self, chat_id, text):
         return self._telebot.send_message(chat_id, text)
 
+    def set_webhook(self, webhook_url):
+        return self._telebot.set_webhook(webhook_url)
+
     def reply_to(self, message, text, disable_preview=False, force_reply=False):
         reply_markup = types.ForceReply(selective=True) if force_reply else None
 
