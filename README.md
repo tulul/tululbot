@@ -10,6 +10,8 @@
 
 **/who** - Know your tululbot
 
+**/slang** - Lookup slang word definition; the result may surprise you!
+
 ## Development Guide
 
 ### How to set up your machine
