@@ -24,17 +24,17 @@ class TululBot:
                                       disable_web_page_preview=disable_preview,
                                       reply_markup=reply_markup)
 
-    def message_handler(self, equals=None, startswith=None, is_reply_to_bot=None):
+    def message_handler(self, equals=None, is_reply_to_bot=None, commands=None):
         if equals is not None:
-            func = self._make_equals_func(equals)
-        elif startswith is not None:
-            func = self._make_startswith_func(startswith)
+            kwargs = {'func': self._make_equals_func(equals)}
         elif is_reply_to_bot is not None:
-            func = self._make_is_reply_to_bot_func(is_reply_to_bot)
+            kwargs = {'func': self._make_is_reply_to_bot_func(is_reply_to_bot)}
+        elif commands is not None:
+            kwargs = {'commands': commands}
         else:
             raise ValueError('Argument must be given')
 
-        return self._telebot.message_handler(func=func)
+        return self._telebot.message_handler(**kwargs)
 
     def handle_new_message(self, message):
         self._telebot.process_new_messages([message])
@@ -45,13 +45,6 @@ class TululBot:
             message_text = TululBot._get_text(message)
             return message_text is not None and message_text == text
         return equals
-
-    @staticmethod
-    def _make_startswith_func(text):
-        def startswith(message):
-            message_text = TululBot._get_text(message)
-            return message_text is not None and message_text.startswith(text)
-        return startswith
 
     @staticmethod
     def _get_text(message):

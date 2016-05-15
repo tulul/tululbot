@@ -18,7 +18,7 @@ def test_not_json_content(client):
     assert rv.status_code == 403
 
 
-def test_valid_update(client, mocker, fake_update_dict, fake_update):
+def test_valid_update(client, mocker, fake_update_dict):
     mock_handle_new_message = mocker.patch('tululbot.bot.handle_new_message',
                                            autospec=True)
 

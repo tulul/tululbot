@@ -11,10 +11,10 @@ quote_engine = QuoteEngine()
 
 
 @bot.message_handler(is_reply_to_bot='Apa yang mau dileli?')
-@bot.message_handler(startswith='/leli ')
+@bot.message_handler(commands=['leli'])
 def leli(message):
     app.logger.debug('Detected as leli command')
-    term = _extract_term(message)
+    term = _extract_leli_term(message)
     if not term:
         return bot.reply_to(message, 'Apa yang mau dileli?',
                             force_reply=True)
@@ -25,17 +25,17 @@ def leli(message):
         return bot.reply_to(message, result, disable_preview=True)
 
 
-@bot.message_handler(equals='/quote')
+@bot.message_handler(commands=['quote'])
 def quote(message):
     app.logger.debug('Detected as quote command')
     return bot.reply_to(message, quote_engine.retrieve_random())
 
 
-@bot.message_handler(equals='/who')
+@bot.message_handler(commands=['who'])
 def who(message):
     app.logger.debug('Detected as who command')
     about_text = (
-        'TululBot v1.0.0\n\n'
+        'TululBot v1.0.1\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
@@ -43,7 +43,7 @@ def who(message):
     return bot.reply_to(message, about_text, disable_preview=True)
 
 
-def _extract_term(message):
+def _extract_leli_term(message):
     assert message.text is not None
     return message.text[6:] if message.text.startswith('/leli') else message.text
 
@@ -97,7 +97,7 @@ def _parse_first_paragraph(page):
 
 
 def _parse_content_text(page):
-    return BeautifulSoup(page).find('div', id='mw-content-text')
+    return BeautifulSoup(page, 'html.parser').find('div', id='mw-content-text')
 
 
 def _search_on_google(term):

@@ -109,26 +109,6 @@ def test_equals_message_handler(mocker, fake_message):
     assert not func(fake_message)
 
 
-def test_startswith_message_handler(mocker, fake_message):
-    bot = TululBot('TOKEN')
-    mock_message_handler = mocker.patch.object(bot._telebot, 'message_handler',
-                                               autospec=True)
-
-    @bot.message_handler(startswith='/hello')
-    def handle(message):
-        pass
-
-    args, kwargs = mock_message_handler.call_args
-    assert len(args) == 0
-    assert len(kwargs) == 1
-    assert 'func' in kwargs
-    func = kwargs['func']
-    fake_message.text = '/hello world'
-    assert func(fake_message)
-    fake_message.text = '/hell'
-    assert not func(fake_message)
-
-
 def test_is_reply_to_bot_message_handler(mocker, fake_message_dict, fake_user_dict):
     fake_reply_message_dict = fake_message_dict.copy()
 
@@ -188,3 +168,19 @@ def test_handle_new_message(mocker, fake_message):
     bot.handle_new_message(fake_message)
 
     mock_process_new_messages.assert_called_once_with([fake_message])
+
+
+def test_commands_message_handler(mocker):
+    bot = TululBot('TOKEN')
+    mock_message_handler = mocker.patch.object(bot._telebot, 'message_handler',
+                                               autospec=True)
+
+    @bot.message_handler(commands=['hello'])
+    def handle(message):
+        pass
+
+    args, kwargs = mock_message_handler.call_args
+    assert len(args) == 0
+    assert len(kwargs) == 1
+    assert 'commands' in kwargs
+    assert kwargs['commands'] == ['hello']
