@@ -13,17 +13,16 @@ env:
 install:
   # Install dependencies
   - pip install -r requirements.txt
+  - pip install coveralls
 before_script:
   # Set some variables for build status notification
   - export COMMITTER_NAME=`git log -n 1 --pretty='%cn'`
   - export BUILD_URL="https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID"
 script:
-  # Run linters
-  - flake8
-  # Run tests
-  - py.test
+  - python manage.py check
 after_success:
   - export BUILD_STATUS="succeeded <3 <3 <3"
+  - coveralls
 after_failure:
   - export BUILD_STATUS="failed!!!"
 after_script:

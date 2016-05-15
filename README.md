@@ -1,4 +1,4 @@
-# TululBot ![TululBot Build Status](https://travis-ci.org/tulul/tululbot.svg) [![Stories in Ready](https://badge.waffle.io/tulul/tululbot.png?label=ready&title=Ready)](https://waffle.io/tulul/tululbot)
+# TululBot ![TululBot Build Status](https://travis-ci.org/tulul/tululbot.svg) [![Coverage Status](https://coveralls.io/repos/github/tulul/tululbot/badge.svg?branch=master)](https://coveralls.io/github/tulul/tululbot?branch=master) [![Stories in Ready](https://badge.waffle.io/tulul/tululbot.png?label=ready&title=Ready)](https://waffle.io/tulul/tululbot)
 
 ![TululBot Command Preview](https://cdn.rawgit.com/tulul/tululbot/master/assets/img/preview.gif)
 
