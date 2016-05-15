@@ -91,6 +91,21 @@ class TestTululBot:
         assert 'reply_markup' in kwargs
         assert isinstance(kwargs['reply_markup'], types.ForceReply)
 
+    def test_forward_message(self, mocker):
+        bot = TululBot('TOKEN')
+        return_value = 'some return value'
+        mock_forward_message = mocker.patch.object(bot._telebot, 'forward_message',
+                                                   return_value=return_value,
+                                                   autospec=True)
+        chat_id = 12345
+        from_chat_id = 67890
+        message_id = 42
+
+        rv = bot.forward_message(chat_id, from_chat_id, message_id)
+
+        assert rv == return_value
+        mock_forward_message.assert_called_once_with(chat_id, from_chat_id, message_id)
+
     def test_message_handler_with_no_argument(self):
         bot = TululBot('TOKEN')
         with pytest.raises(ValueError):

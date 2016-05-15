@@ -1,6 +1,6 @@
 from unittest.mock import call, MagicMock
 
-from tululbot.commands import leli, quote, who, slang
+from tululbot.commands import leli, quote, who, slang, hotline
 
 
 class TestLeliCommand:
@@ -191,3 +191,15 @@ def test_slang_no_word(fake_message, fake_user, mocker):
 
     fake_bot.reply_to.assert_called_once_with(fake_message, 'Apa yang mau dicari jir?',
                                               force_reply=True)
+
+
+def test_hotline(fake_message, mocker):
+    fake_message.text = '/hotline'
+    mock_hotline_message_id = mocker.patch('tululbot.commands.HOTLINE_MESSAGE_ID')
+    mock_forward_message = mocker.patch('tululbot.commands.bot.forward_message')
+
+    hotline(fake_message)
+
+    mock_forward_message.assert_called_once_with(
+        fake_message.chat.id, fake_message.chat.id, mock_hotline_message_id
+    )

@@ -13,3 +13,8 @@ try:
 except KeyError:
     warnings.warn('TULULBOT_DEVEL_CHAT_ID is not set; errors will pass silently')
     TULULBOT_DEVEL_CHAT_ID = ''
+
+try:
+    HOTLINE_MESSAGE_ID = environ['HOTLINE_MESSAGE_ID']
+except KeyError:
+    HOTLINE_MESSAGE_ID = None

@@ -9,6 +9,7 @@ from .utils import QuoteEngine, lookup_slang
 
 
 quote_engine = QuoteEngine()
+HOTLINE_MESSAGE_ID = app.config['HOTLINE_MESSAGE_ID']
 
 
 @bot.message_handler(is_reply_to_bot='Apa yang mau dileli?')
@@ -55,6 +56,13 @@ def slang(message):
     else:
         slang_definition = lookup_slang(word)
         return bot.reply_to(message, slang_definition)
+
+
+@bot.message_handler(commands=['hotline'])
+def hotline(message):
+    app.logger.debug('Detected as hotline command')
+    if HOTLINE_MESSAGE_ID is not None:
+        return bot.forward_message(message.chat.id, message.chat.id, HOTLINE_MESSAGE_ID)
 
 
 def _extract_leli_term(message):

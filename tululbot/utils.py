@@ -41,6 +41,9 @@ class TululBot:
                                       disable_web_page_preview=disable_preview,
                                       reply_markup=reply_markup)
 
+    def forward_message(self, chat_id, from_chat_id, message_id):
+        return self._telebot.forward_message(chat_id, from_chat_id, message_id)
+
     def message_handler(self, equals=None, is_reply_to_bot=None, commands=None):
         if equals is not None:
             kwargs = {'func': self._make_equals_func(equals)}
