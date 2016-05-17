@@ -206,21 +206,16 @@ def test_hotline(fake_message, mocker):
 
 
 def test_hbd(fake_message, fake_user, mocker):
-    class FakeBot:
-        def __init__(self):
-            self.user = fake_user
-            self.reply_to = MagicMock()
-
-    fake_bot = FakeBot()
     birthday_boy_or_girl_name = "Tutu Lulul"
     fake_message.text = '/hbd {}'.format(birthday_boy_or_girl_name)
     hbd_greetings = "hoi " + birthday_boy_or_girl_name \
         + " met ultah ya moga sehat dan sukses selalu :tada: :confetti_ball:"
-    mocker.patch('tululbot.commands.bot', new=fake_bot)
+
+    mock_send_message = mocker.patch('tululbot.commands.bot.send_message')
 
     hbd(fake_message)
 
-    fake_bot.reply_to.assert_called_once_with(fake_message, hbd_greetings)
+    mock_send_message.assert_called_once_with(fake_message.chat.id, hbd_greetings)
 
 
 def test_hbd_no_word(fake_message, fake_user, mocker):

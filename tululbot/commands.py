@@ -76,7 +76,7 @@ def hbd(message):
     else:
         greetings = "hoi " + term \
             + " met ultah ya moga sehat dan sukses selalu :tada: :confetti_ball:"
-        return bot.reply_to(message, greetings)
+        return bot.send_message(message.chat.id, greetings)
 
 
 def _extract_leli_term(message):
