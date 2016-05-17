@@ -4,6 +4,7 @@ from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 import requests
 from telebot import TeleBot, types
+import urbandict as ud
 import yaml
 
 
@@ -119,6 +120,14 @@ class QuoteEngine:
 
 def lookup_slang(word):
     not_found_word = 'Gak nemu cuy'
+    return lookup_urbandictionary(word) or lookup_kamusslang(word) or not_found_word
+
+
+def lookup_kamusslang(word):
+    """Lookup slang word definition on kamusslang.com.
+
+    Returns None if no definition found.
+    """
     kamusslang_url_format = 'http://kamusslang.com/arti/{}'
     url = kamusslang_url_format.format(quote_plus(word))
     r = requests.get(url)
@@ -131,6 +140,24 @@ def lookup_slang(word):
 
     # Prevent word-alike suggestion
     if doc.find(class_='close-word-suggestion-text') is not None:
-        return not_found_word
+        return None
 
-    return ''.join(paragraph.strings) if paragraph is not None else not_found_word
+    return ''.join(paragraph.strings) if paragraph is not None else None
+
+
+def lookup_urbandictionary(word):
+    """Lookup word definition on urbandictionary.com.
+
+    Returns None if no definition found.
+    """
+    res = ud.define(word)
+    assert res  # res is never empty, even when no definition is found
+
+    if _urbandictionary_has_definition(res[0]):
+        return res[0]['def']
+
+    return None
+
+
+def _urbandictionary_has_definition(definition):
+    return "There aren't any definition" not in definition['def']

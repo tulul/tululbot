@@ -1,7 +1,7 @@
 import pytest
 from telebot import types
 
-from tululbot.utils import TululBot, lookup_slang
+from tululbot.utils import TululBot, lookup_kamusslang, lookup_urbandictionary, lookup_slang
 from tululbot.types import Message
 
 
@@ -199,15 +199,17 @@ class TestTululBot:
         mock_get_me.assert_called_once_with()
 
 
-def test_lookup_slang(mocker):
+def test_lookup_kamusslang(mocker):
     class FakeParagraph:
         def __init__(self, strings):
             self.strings = strings
 
     strings = ['asdf', 'alsjdf', 'kfdg']
 
-    side_effect_pair = {'close-word-suggestion-text': None,
-                        'term-def': FakeParagraph(strings)}
+    side_effect_pair = {
+        'close-word-suggestion-text': None,
+        'term-def': FakeParagraph(strings)
+    }
 
     class FakeSoup:
         def find(self, class_):
@@ -216,14 +218,16 @@ def test_lookup_slang(mocker):
     mocker.patch('tululbot.utils.requests.get')
     mocker.patch('tululbot.utils.BeautifulSoup', return_value=FakeSoup())
 
-    rv = lookup_slang('jdflafj')
+    rv = lookup_kamusslang('jdflafj')
 
     assert rv == ''.join(strings)
 
 
-def test_lookup_slang_no_definition_found(mocker):
-    side_effect_pair = {'close-word-suggestion-text': None,
-                        'term-def': None}
+def test_lookup_kamusslang_no_definition_found(mocker):
+    side_effect_pair = {
+        'close-word-suggestion-text': None,
+        'term-def': None
+    }
 
     class FakeSoup:
         def find(self, class_):
@@ -232,19 +236,21 @@ def test_lookup_slang_no_definition_found(mocker):
     mocker.patch('tululbot.utils.requests.get')
     mocker.patch('tululbot.utils.BeautifulSoup', return_value=FakeSoup())
 
-    rv = lookup_slang('jdflafj')
+    rv = lookup_kamusslang('jdflafj')
 
-    assert rv == 'Gak nemu cuy'
+    assert rv is None
 
 
-def test_lookup_slang_no_wrong_suggestion(mocker):
+def test_lookup_kamusslang_close_word_suggestion(mocker):
     class FakeParagraph:
         def __init__(self, strings):
             self.strings = strings
 
     strings = ['asdf', 'alsjdf', 'kfdg']
-    side_effect_pair = {'close-word-suggestion-text': 'Apalah',
-                        'term-def': FakeParagraph(strings)}
+    side_effect_pair = {
+        'close-word-suggestion-text': 'Apalah',
+        'term-def': FakeParagraph(strings)
+    }
 
     class FakeSoup:
         def find(self, class_):
@@ -253,18 +259,81 @@ def test_lookup_slang_no_wrong_suggestion(mocker):
     mocker.patch('tululbot.utils.requests.get')
     mocker.patch('tululbot.utils.BeautifulSoup', return_value=FakeSoup())
 
-    rv = lookup_slang('jdflafj')
+    rv = lookup_kamusslang('jdflafj')
 
-    assert rv == 'Gak nemu cuy'
+    assert rv is None
 
 
-def test_lookup_slang_conn_error(mocker):
+def test_lookup_kamusslang_conn_error(mocker):
     class FakeResponse:
         def __init__(self):
             self.ok = False
 
     mocker.patch('tululbot.utils.requests.get', return_value=FakeResponse())
 
-    rv = lookup_slang('asdf jku')
+    rv = lookup_kamusslang('asdf jku')
 
     assert rv == "Koneksi lagi bapuk nih :'("
+
+
+def test_lookup_urbandictionary(mocker):
+    fake_definition = [
+        {
+            'def': 'mmeeeeooowww',
+            'example': 'guk guk guk',
+            'word': 'kaing kaing'
+        },
+        {
+            'def': 'grrrrrrrr',
+            'example': 'tokkeeeeekk tokkeeeekk',
+            'word': 'aaauuuuuuuu'
+        }
+    ]
+    mocker.patch('tululbot.utils.ud.define', return_value=fake_definition)
+
+    rv = lookup_urbandictionary('eemmbeekk')
+
+    assert rv == fake_definition[0]['def']
+
+
+def test_lookup_urbandictionary_no_definition_found(mocker):
+    fake_no_definition = [
+        {
+            'def': "\nThere aren't any definitions for kimcil yet.\nCan you define it?\n",
+            'example': '',
+            'word': '¯\\_(ツ)_/¯\n'
+            }
+    ]
+    mocker.patch('tululbot.utils.ud.define', return_value=fake_no_definition)
+
+    rv = lookup_urbandictionary('eemmbeekk')
+
+    assert rv is None
+
+
+def test_lookup_slang_when_urbandictionary_has_definition(mocker):
+    fake_definition = 'soba ni itai yo'
+    mocker.patch('tululbot.utils.lookup_urbandictionary', return_value=fake_definition)
+
+    rv = lookup_slang('kimi no tame ni dekiru koto ga, boku ni aru kana?')
+
+    assert rv == fake_definition
+
+
+def test_lookup_slang_when_urbandictionary_has_no_definition_but_kamusslang_does(mocker):
+    fake_definition = 'nagareru kisetsu no mannaka de'
+    mocker.patch('tululbot.utils.lookup_urbandictionary', return_value=None)
+    mocker.patch('tululbot.utils.lookup_kamusslang', return_value=fake_definition)
+
+    rv = lookup_slang('futohi no nagasa wo kanjimasu')
+
+    assert rv == fake_definition
+
+
+def test_lookup_slang_when_both_urbandictionary_and_kamusslang_has_no_definition(mocker):
+    mocker.patch('tululbot.utils.lookup_urbandictionary', return_value=None)
+    mocker.patch('tululbot.utils.lookup_kamusslang', return_value=None)
+
+    rv = lookup_slang('hitomi wo tojireba anata ga')
+
+    assert rv == 'Gak nemu cuy'

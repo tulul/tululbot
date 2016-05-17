@@ -127,7 +127,7 @@ def test_who(fake_message, mocker):
     who(fake_message)
 
     expected_text = (
-        'TululBot v1.1.1\n\n'
+        'TululBot v1.2.1\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
