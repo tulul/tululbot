@@ -65,6 +65,20 @@ def hotline(message):
         return bot.forward_message(message.chat.id, message.chat.id, HOTLINE_MESSAGE_ID)
 
 
+@bot.message_handler(is_reply_to_bot='Siapa yang ultah?')
+@bot.message_handler(commands=['hbd'])
+def hbd(message):
+    app.logger.debug('Detected as hbd command')
+    term = _extract_birthday_boy_or_girl_name(message)
+    if not term:
+        return bot.reply_to(message, 'Siapa yang ultah?',
+                            force_reply=True)
+    else:
+        greetings = "hoi " + term \
+            + " met ultah ya moga sehat dan sukses selalu :tada: :confetti_ball:"
+        return bot.reply_to(message, greetings)
+
+
 def _extract_leli_term(message):
     assert message.text is not None
     return message.text[6:] if message.text.startswith('/leli') else message.text
@@ -79,6 +93,11 @@ def _extract_slang_word(message):
         return match.groupdict()['word'] if match is not None else None
     else:
         return message.text
+
+
+def _extract_birthday_boy_or_girl_name(message):
+    assert message.text is not None
+    return message.text[5:] if message.text.startswith('/hbd') else message.text
 
 
 def _search_on_wikipedia(term):

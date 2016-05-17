@@ -1,6 +1,6 @@
 from unittest.mock import call, MagicMock
 
-from tululbot.commands import leli, quote, who, slang, hotline
+from tululbot.commands import leli, quote, who, slang, hotline, hbd
 
 
 class TestLeliCommand:
@@ -203,3 +203,37 @@ def test_hotline(fake_message, mocker):
     mock_forward_message.assert_called_once_with(
         fake_message.chat.id, fake_message.chat.id, mock_hotline_message_id
     )
+
+
+def test_hbd(fake_message, fake_user, mocker):
+    class FakeBot:
+        def __init__(self):
+            self.user = fake_user
+            self.reply_to = MagicMock()
+
+    fake_bot = FakeBot()
+    birthday_boy_or_girl_name = "Tutu Lulul"
+    fake_message.text = '/hbd {}'.format(birthday_boy_or_girl_name)
+    hbd_greetings = "hoi " + birthday_boy_or_girl_name \
+        + " met ultah ya moga sehat dan sukses selalu :tada: :confetti_ball:"
+    mocker.patch('tululbot.commands.bot', new=fake_bot)
+
+    hbd(fake_message)
+
+    fake_bot.reply_to.assert_called_once_with(fake_message, hbd_greetings)
+
+
+def test_hbd_no_word(fake_message, fake_user, mocker):
+    class FakeBot:
+        def __init__(self):
+            self.user = fake_user
+            self.reply_to = MagicMock()
+
+    fake_bot = FakeBot()
+    fake_message.text = '/hbd'
+    mocker.patch('tululbot.commands.bot', new=fake_bot)
+
+    hbd(fake_message)
+
+    fake_bot.reply_to.assert_called_once_with(fake_message, 'Siapa yang ultah?',
+                                              force_reply=True)
