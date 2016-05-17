@@ -14,6 +14,8 @@
 
 **/who** - Know your tululbot
 
+**/hbd** - Send your friend a birthday blessing message
+
 ## Development Guide
 
 ### How to set up your machine
