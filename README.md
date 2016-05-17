@@ -211,4 +211,4 @@ If you want to write new features to TululBot or fix bugs, that's great! Here is
 
 #### Special Cases
 
-In case you want to commit a really minor fix, you may skip all above steps and directly push to master. For example, fixing typos, fixing whitespaces, super minor bug you spotted in your previous commits, etc. Remeber, our development process model is **Leaderless Agile**. Don't over-abuse this rule. With great power, comes great responsibility.
+In case you want to commit a really minor fix, you may skip all above steps and directly push to master. For example, fixing typos, fixing whitespaces, super minor bug you spotted in your previous commits, etc. Remember, our development process model is **Leaderless Agile**. Don't over-abuse this rule. With great power, comes great responsibility.
