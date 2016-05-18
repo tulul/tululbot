@@ -212,17 +212,19 @@ def test_hbd(fake_message, fake_user, mocker):
             self.send_message = MagicMock()
 
     fake_bot = FakeBot()
-    birthday_boy_or_girl_name = "Tutu Lulul"
-    fake_message.text = '/hbd {}'.format(birthday_boy_or_girl_name)
-    hbd_greetings = "hoi " + birthday_boy_or_girl_name \
-        + " met ultah ya moga sehat dan sukses selalu \xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A"
+    fake_name = "Tutu Lulul"
+    fake_message.text = '/hbd {}'.format(fake_name)
+    greetings = 'hoi ' \
+                ' met ultah ya moga sehat dan sukses selalu ' \
+                '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A' \
+                .format(fake_name)
 
     mocker.patch('tululbot.commands.bot', new=fake_bot)
     mock_send_message = mocker.patch('tululbot.commands.bot.send_message')
 
     hbd(fake_message)
 
-    mock_send_message.assert_called_once_with(fake_message.chat.id, hbd_greetings)
+    mock_send_message.assert_called_once_with(fake_message.chat.id, greetings)
 
 
 def test_hbd_with_bot_name(fake_message, fake_user, mocker):
@@ -232,19 +234,21 @@ def test_hbd_with_bot_name(fake_message, fake_user, mocker):
             self.send_message = MagicMock()
 
     fake_bot = FakeBot()
-    birthday_boy_or_girl_name = "Tutu Lulul"
+    fake_name = "Tutu Lulul"
     fake_message.text = '/hbd@{} {}'.format(
         fake_bot.user.first_name,
-        birthday_boy_or_girl_name
+        fake_name
     )
-    hbd_greetings = "hoi " + birthday_boy_or_girl_name \
-        + " met ultah ya moga sehat dan sukses selalu \xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A"
+    greetings = 'hoi ' \
+                ' met ultah ya moga sehat dan sukses selalu ' \
+                '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A' \
+                .format(fake_name)
     mocker.patch('tululbot.commands.bot', new=fake_bot)
     mock_send_message = mocker.patch('tululbot.commands.bot.send_message')
 
     hbd(fake_message)
 
-    mock_send_message.assert_called_once_with(fake_message.chat.id, hbd_greetings)
+    mock_send_message.assert_called_once_with(fake_message.chat.id, greetings)
 
 
 def test_hbd_no_word(fake_message, fake_user, mocker):

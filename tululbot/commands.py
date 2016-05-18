@@ -69,13 +69,15 @@ def hotline(message):
 @bot.message_handler(commands=['hbd'])
 def hbd(message):
     app.logger.debug('Detected as hbd command')
-    term = _extract_birthday_boy_or_girl_name(message)
-    if not term:
+    name = _extract_birthday_boy_or_girl_name(message)
+    if not name:
         return bot.reply_to(message, 'Siapa yang ultah?',
                             force_reply=True)
     else:
-        greetings = "hoi " + term \
-            + " met ultah ya moga sehat dan sukses selalu \xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A"
+        greetings = 'hoi ' \
+                    ' met ultah ya moga sehat dan sukses selalu ' \
+                    '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A' \
+                    .format(name)
         return bot.send_message(message.chat.id, greetings)
 
 
