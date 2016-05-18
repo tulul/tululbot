@@ -97,7 +97,12 @@ def _extract_slang_word(message):
 
 def _extract_birthday_boy_or_girl_name(message):
     assert message.text is not None
-    return message.text[5:] if message.text.startswith('/hbd') else message.text
+    if message.text.startswith('/hbd'):
+        regexp = r'/hbd(@{})? (?P<word>.+)$'.format(bot.user.first_name)
+        match = re.match(regexp, message.text)
+        return match.groupdict()['word'] if match is not None else None
+    else:
+        return message.text
 
 
 def _search_on_wikipedia(term):
