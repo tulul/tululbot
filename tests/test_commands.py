@@ -209,7 +209,7 @@ def test_hbd(fake_message, fake_user, mocker):
     birthday_boy_or_girl_name = "Tutu Lulul"
     fake_message.text = '/hbd {}'.format(birthday_boy_or_girl_name)
     hbd_greetings = "hoi " + birthday_boy_or_girl_name \
-        + " met ultah ya moga sehat dan sukses selalu :tada: :confetti_ball:"
+        + " met ultah ya moga sehat dan sukses selalu \xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A"
 
     mock_send_message = mocker.patch('tululbot.commands.bot.send_message')
 

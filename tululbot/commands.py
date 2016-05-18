@@ -75,7 +75,7 @@ def hbd(message):
                             force_reply=True)
     else:
         greetings = "hoi " + term \
-            + " met ultah ya moga sehat dan sukses selalu :tada: :confetti_ball:"
+            + " met ultah ya moga sehat dan sukses selalu \xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A"
         return bot.send_message(message.chat.id, greetings)
 
 
