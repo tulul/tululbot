@@ -85,20 +85,18 @@ def _extract_leli_term(message):
 
 
 def _extract_slang_word(message):
-    assert message.text is not None
-
-    if message.text.startswith('/slang'):
-        regexp = r'/slang(@{})? (?P<word>.+)$'.format(bot.user.first_name)
-        match = re.match(regexp, message.text)
-        return match.groupdict()['word'] if match is not None else None
-    else:
-        return message.text
+    return _extract_word(message, "slang")
 
 
 def _extract_birthday_boy_or_girl_name(message):
+    return _extract_word(message, "hbd")
+
+
+def _extract_word(message, command_name):
     assert message.text is not None
-    if message.text.startswith('/hbd'):
-        regexp = r'/hbd(@{})? (?P<word>.+)$'.format(bot.user.first_name)
+
+    if message.text.startswith("/{}".format(command_name)):
+        regexp = r'/{}(@{})? (?P<word>.+)$'.format(command_name, bot.user.first_name)
         match = re.match(regexp, message.text)
         return match.groupdict()['word'] if match is not None else None
     else:
