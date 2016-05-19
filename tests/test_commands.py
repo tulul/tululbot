@@ -127,7 +127,7 @@ def test_who(fake_message, mocker):
     who(fake_message)
 
     expected_text = (
-        'TululBot v1.3.1\n\n'
+        'TululBot v1.3.2\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
@@ -216,7 +216,7 @@ def test_hbd(fake_message, fake_user, mocker):
     fake_message.text = '/hbd {}'.format(fake_name)
     greetings_format = ('hoi {}'
                         ' met ultah ya moga sehat dan sukses selalu '
-                        '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A')
+                        '\U0001F389 \U0001F38A')
     greetings = greetings_format.format(fake_name)
 
     mocker.patch('tululbot.commands.bot', new=fake_bot)
@@ -241,7 +241,7 @@ def test_hbd_with_bot_name(fake_message, fake_user, mocker):
     )
     greetings_format = ('hoi {}'
                         ' met ultah ya moga sehat dan sukses selalu '
-                        '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A')
+                        '\U0001F389 \U0001F38A')
     greetings = greetings_format.format(fake_name)
     mocker.patch('tululbot.commands.bot', new=fake_bot)
     mock_send_message = mocker.patch('tululbot.commands.bot.send_message')
