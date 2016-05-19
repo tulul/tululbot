@@ -65,16 +65,40 @@ def hotline(message):
         return bot.forward_message(message.chat.id, message.chat.id, HOTLINE_MESSAGE_ID)
 
 
+@bot.message_handler(is_reply_to_bot='Siapa yang ultah?')
+@bot.message_handler(commands=['hbd'])
+def hbd(message):
+    app.logger.debug('Detected as hbd command')
+    name = _extract_birthday_boy_or_girl_name(message)
+    if not name:
+        return bot.reply_to(message, 'Siapa yang ultah?',
+                            force_reply=True)
+    else:
+        greetings_format = ('hoi {}'
+                            ' met ultah ya moga sehat dan sukses selalu '
+                            '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A')
+        greetings = greetings_format.format(name)
+        return bot.send_message(message.chat.id, greetings)
+
+
 def _extract_leli_term(message):
     assert message.text is not None
     return message.text[6:] if message.text.startswith('/leli') else message.text
 
 
 def _extract_slang_word(message):
+    return _extract_word(message, "slang")
+
+
+def _extract_birthday_boy_or_girl_name(message):
+    return _extract_word(message, "hbd")
+
+
+def _extract_word(message, command_name):
     assert message.text is not None
 
-    if message.text.startswith('/slang'):
-        regexp = r'/slang(@{})? (?P<word>.+)$'.format(bot.user.first_name)
+    if message.text.startswith("/{}".format(command_name)):
+        regexp = r'/{}(@{})? (?P<word>.+)$'.format(command_name, bot.user.first_name)
         match = re.match(regexp, message.text)
         return match.groupdict()['word'] if match is not None else None
     else:
