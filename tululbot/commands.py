@@ -74,10 +74,10 @@ def hbd(message):
         return bot.reply_to(message, 'Siapa yang ultah?',
                             force_reply=True)
     else:
-        greetings = 'hoi ' \
-                    ' met ultah ya moga sehat dan sukses selalu ' \
-                    '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A' \
-                    .format(name)
+        greetings_format = ('hoi {}'
+                            ' met ultah ya moga sehat dan sukses selalu '
+                            '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A')
+        greetings = greetings_format.format(name)
         return bot.send_message(message.chat.id, greetings)
 
 

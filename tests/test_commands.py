@@ -214,10 +214,10 @@ def test_hbd(fake_message, fake_user, mocker):
     fake_bot = FakeBot()
     fake_name = "Tutu Lulul"
     fake_message.text = '/hbd {}'.format(fake_name)
-    greetings = 'hoi ' \
-                ' met ultah ya moga sehat dan sukses selalu ' \
-                '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A' \
-                .format(fake_name)
+    greetings_format = ('hoi {}'
+                        ' met ultah ya moga sehat dan sukses selalu '
+                        '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A')
+    greetings = greetings_format.format(fake_name)
 
     mocker.patch('tululbot.commands.bot', new=fake_bot)
     mock_send_message = mocker.patch('tululbot.commands.bot.send_message')
@@ -239,10 +239,10 @@ def test_hbd_with_bot_name(fake_message, fake_user, mocker):
         fake_bot.user.first_name,
         fake_name
     )
-    greetings = 'hoi ' \
-                ' met ultah ya moga sehat dan sukses selalu ' \
-                '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A' \
-                .format(fake_name)
+    greetings_format = ('hoi {}'
+                        ' met ultah ya moga sehat dan sukses selalu '
+                        '\xF0\x9F\x8E\x89 \xF0\x9F\x8E\x8A')
+    greetings = greetings_format.format(fake_name)
     mocker.patch('tululbot.commands.bot', new=fake_bot)
     mock_send_message = mocker.patch('tululbot.commands.bot.send_message')
 
