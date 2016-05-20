@@ -337,3 +337,20 @@ def test_lookup_slang_when_both_urbandictionary_and_kamusslang_has_no_definition
     rv = lookup_slang('hitomi wo tojireba anata ga')
 
     assert rv == 'Gak nemu cuy'
+
+
+def test_lookup_slang_when_both_urbandictionary_and_kamusslang_both_has_definition(mocker):
+    fake_urban_definition = 'mabuta no ura ni iru koto de'
+    fake_slang_definition = 'dore hodo tsuyoku na eta deshou'
+    mocker.patch('tululbot.utils.lookup_urbandictionary', return_value=fake_urban_definition)
+    mocker.patch('tululbot.utils.lookup_kamusslang', return_value=fake_slang_definition)
+
+    rv = lookup_slang('hitomi wo tojireba anata ga')
+
+    fake_definition = (
+        'urbandictionary:\n{}'
+        '\n\n'
+        'kamusslang:\n{}'
+    ).format(fake_urban_definition, fake_slang_definition)
+
+    assert rv == fake_definition

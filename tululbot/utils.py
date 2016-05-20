@@ -120,7 +120,21 @@ class QuoteEngine:
 
 def lookup_slang(word):
     not_found_word = 'Gak nemu cuy'
-    return lookup_urbandictionary(word) or lookup_kamusslang(word) or not_found_word
+    return lookup_slang_sources(word) or not_found_word
+
+
+def lookup_slang_sources(word):
+    word_definitions = None
+    urbandic_def = lookup_urbandictionary(word)
+    kamusslang_def = lookup_kamusslang(word)
+    if urbandic_def is not None and kamusslang_def is not None:
+        return (
+            'urbandictionary:\n{}'
+            '\n\n'
+            'kamusslang:\n{}'
+        ).format(urbandic_def, kamusslang_def)
+    else:
+        return urbandic_def or kamusslang_def
 
 
 def lookup_kamusslang(word):
