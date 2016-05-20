@@ -340,9 +340,9 @@ def test_lookup_slang_when_both_urbandictionary_and_kamusslang_have_no_definitio
 
 
 def test_lookup_slang_when_both_urbandictionary_and_kamusslang_have_definition(mocker):
-    fake_urbandictionary_def = 'mabuta no ura ni iru koto de'
+    fake_urbandict_def = 'mabuta no ura ni iru koto de'
     fake_kamusslang_def = 'dore hodo tsuyoku nareta deshou'
-    mocker.patch('tululbot.utils.lookup_urbandictionary', return_value=fake_urbandictionary_def)
+    mocker.patch('tululbot.utils.lookup_urbandictionary', return_value=fake_urbandict_def)
     mocker.patch('tululbot.utils.lookup_kamusslang', return_value=fake_kamusslang_def)
 
     rv = lookup_slang('anata ni totte watashi mo')
@@ -351,6 +351,6 @@ def test_lookup_slang_when_both_urbandictionary_and_kamusslang_have_definition(m
         'urbandictionary:\n{}'
         '\n\n'
         'kamusslang:\n{}'
-    ).format(fake_urbandictionary_def, fake_kamusslang_def)
+    ).format(fake_urbandict_def, fake_kamusslang_def)
 
     assert rv == fake_definition
