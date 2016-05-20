@@ -124,15 +124,15 @@ def lookup_slang(word):
 
 
 def lookup_slang_sources(word):
-    urbandict_def = lookup_urbandictionary(word)
+    urbandictionary_def = lookup_urbandictionary(word)
     kamusslang_def = lookup_kamusslang(word)
-    if urbandict_def is not None and kamusslang_def is not None:
+    if urbandictionary_def is not None and kamusslang_def is not None:
         return (
             'urbandictionary:\n{}'
             '\n\n'
             'kamusslang:\n{}'
-        ).format(urbandict_def, kamusslang_def)
-    return urbandict_def or kamusslang_def
+        ).format(urbandictionary_def, kamusslang_def)
+    return urbandictionary_def or kamusslang_def
 
 
 def lookup_kamusslang(word):
