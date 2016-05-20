@@ -124,7 +124,6 @@ def lookup_slang(word):
 
 
 def lookup_slang_sources(word):
-    word_definitions = None
     urbandic_def = lookup_urbandictionary(word)
     kamusslang_def = lookup_kamusslang(word)
     if urbandic_def is not None and kamusslang_def is not None:
