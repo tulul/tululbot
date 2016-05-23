@@ -311,16 +311,17 @@ def test_lookup_urbandictionary_no_definition_found(mocker):
     assert rv is None
 
 
-def test_lookup_slang_when_urbandictionary_has_definition(mocker):
+def test_lookup_slang_when_only_urbandictionary_has_definition(mocker):
     fake_definition = 'soba ni itai yo'
     mocker.patch('tululbot.utils.lookup_urbandictionary', return_value=fake_definition)
+    mocker.patch('tululbot.utils.lookup_kamusslang', return_value=None)
 
     rv = lookup_slang('kimi no tame ni dekiru koto ga, boku ni aru kana?')
 
     assert rv == fake_definition
 
 
-def test_lookup_slang_when_urbandictionary_has_no_definition_but_kamusslang_does(mocker):
+def test_lookup_slang_when_only_kamusslang_has_definition(mocker):
     fake_definition = 'nagareru kisetsu no mannaka de'
     mocker.patch('tululbot.utils.lookup_urbandictionary', return_value=None)
     mocker.patch('tululbot.utils.lookup_kamusslang', return_value=fake_definition)

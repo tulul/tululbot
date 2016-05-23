@@ -37,7 +37,7 @@ def quote(message):
 def who(message):
     app.logger.debug('Detected as who command')
     about_text = (
-        'TululBot v1.3.2\n\n'
+        'TululBot v1.4.2\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
