@@ -58,6 +58,10 @@ target/
 
 # Ctags file
 tags
+TAGS
 
 # dotenv file
 .env
+
+# OSX
+.DS_Store

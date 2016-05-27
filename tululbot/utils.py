@@ -51,7 +51,7 @@ class TululBot:
         elif is_reply_to_bot is not None:
             kwargs = {'func': self._make_is_reply_to_bot_func(is_reply_to_bot)}
         elif commands is not None:
-            kwargs = {'commands': commands}
+            kwargs = {'func': self._make_commands_func(commands)}
         else:
             raise ValueError('Argument must be given')
 
@@ -66,6 +66,21 @@ class TululBot:
             message_text = TululBot._get_text(message)
             return message_text is not None and message_text == text
         return equals
+
+    @staticmethod
+    def _make_commands_func(commands):
+        def is_command(message):
+            message_text = TululBot._get_text(message)
+            if message_text is None:
+                return False
+
+            for command in commands:
+                command_str = '/{}'.format(command)
+                if message_text.startswith(command_str):
+                    return True
+            else:
+                return False
+        return is_command
 
     @staticmethod
     def _get_text(message):
