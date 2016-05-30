@@ -55,7 +55,7 @@ def slang(message):
         return bot.reply_to(message, 'Apa yang mau dicari jir?', force_reply=True)
     else:
         slang_definition = lookup_slang(word)
-        return bot.reply_to(message, slang_definition)
+        return bot.reply_to(message, slang_definition, parse_mode="Markdown")
 
 
 @bot.message_handler(commands=['hotline'])
