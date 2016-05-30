@@ -355,7 +355,7 @@ def test_lookup_slang_when_both_urbandictionary_and_kamusslang_have_definition(m
     rv = lookup_slang('anata ni totte watashi mo')
 
     fake_definition = (
-        '\U000126AB *urbandictionary*:{}'
+        '\U000126AB *urbandictionary*:\n{}'
         '\n\n'
         '\U000126AB *kamusslang*:\n{}'
     ).format(fake_urbandict_def, fake_kamusslang_def)

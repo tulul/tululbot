@@ -143,10 +143,10 @@ def lookup_slang_sources(word):
     kamusslang_def = lookup_kamusslang(word)
     if urbandict_def is not None and kamusslang_def is not None:
         return (
-            '\U000126AB *urbandictionary*:{}'
+            '\U000126AB *urbandictionary*:\n{}'
             '\n\n'
             '\U000126AB *kamusslang*:\n{}'
-        ).format(urbandict_def, kamusslang_def)
+        ).format(urbandict_def.strip(), kamusslang_def.strip())
     return urbandict_def or kamusslang_def
 
 
