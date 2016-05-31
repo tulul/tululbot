@@ -154,7 +154,9 @@ def test_slang(fake_message, fake_user, mocker):
     slang(fake_message)
 
     mock_lookup_slang.assert_called_once_with(slang_word)
-    fake_bot.reply_to.assert_called_once_with(fake_message, slang_lookup_result)
+    fake_bot.reply_to.assert_called_once_with(fake_message,
+                                              slang_lookup_result,
+                                              parse_mode="Markdown")
 
 
 def test_slang_with_bot_name(fake_message, fake_user, mocker):
@@ -174,7 +176,9 @@ def test_slang_with_bot_name(fake_message, fake_user, mocker):
     slang(fake_message)
 
     mock_lookup_slang.assert_called_once_with(slang_word)
-    fake_bot.reply_to.assert_called_once_with(fake_message, slang_lookup_result)
+    fake_bot.reply_to.assert_called_once_with(fake_message,
+                                              slang_lookup_result,
+                                              parse_mode="Markdown")
 
 
 def test_slang_no_word(fake_message, fake_user, mocker):
