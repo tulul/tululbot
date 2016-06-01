@@ -23,7 +23,8 @@ def main():
     if request.headers.get('content-type') == 'application/json':
         update = Update.from_dict(request.get_json())
         app.logger.debug('Get an update with id %s', update.update_id)
-        bot.handle_new_message(update.message)
+        if update.message is not None:
+            bot.handle_new_message(update.message)
         return 'OK'
     else:
         abort(403)
