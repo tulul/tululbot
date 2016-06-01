@@ -19,11 +19,19 @@ def test_not_json_content(client):
 
 
 def test_valid_update(client, mocker, fake_update_dict):
-    mock_handle_new_message = mocker.patch('tululbot.bot.handle_new_message',
-                                           autospec=True)
+    mock_handle_new_message = mocker.patch('tululbot.bot.process_new_messages', autospec=True)
 
     rv = do_post(client, fake_update_dict)
 
     assert rv.status_code == 200
     assert rv.get_data(as_text=True) == 'OK'
     assert mock_handle_new_message.called
+
+
+def test_no_message_update(client, mocker, fake_update_dict):
+    del fake_update_dict['message']
+    mock_handle_new_message = mocker.patch('tululbot.bot.process_new_messages', autospec=True)
+
+    do_post(client, fake_update_dict)
+
+    assert not mock_handle_new_message.called

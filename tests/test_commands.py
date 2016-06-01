@@ -1,14 +1,11 @@
-from unittest.mock import call, MagicMock
-
 from tululbot.commands import leli, quote, who, slang, hotline, hbd
 
 
 class TestLeliCommand:
 
-    def test_with_no_term(self, fake_message, mocker):
+    def test_with_no_term(self, mocker, fake_message):
         fake_message.text = '/leli'
-        mock_reply_to = mocker.patch('tululbot.commands.bot.reply_to',
-                                     autospec=True)
+        mock_reply_to = mocker.patch('tululbot.commands.bot.reply_to', autospec=True)
 
         leli(fake_message)
 
@@ -31,13 +28,8 @@ class TestLeliCommand:
 
         leli(fake_message)
 
-        mock_requests.get.assert_called_once_with(
-            'https://en.wikipedia.org/w/index.php?search=tulul'
-        )
-        mock_reply_to.assert_called_once_with(
-            fake_message, 'Tulul is the synonym of cool.',
-            disable_preview=True
-        )
+        mock_reply_to.assert_called_once_with(fake_message, 'Tulul is the synonym of cool.',
+                                              disable_web_page_preview=True)
 
     def test_with_ambiguous_term_on_wikipedia(self, fake_message, mocker):
         fake_message.text = '/leli snowden'
@@ -48,7 +40,7 @@ class TestLeliCommand:
             pass
 
         response1 = FakeResponse()
-        response1.status_code = 200
+        response1.ok = True
         response1.text = (
             '<html>'
             '    <div id="mw-content-text">'
@@ -61,7 +53,7 @@ class TestLeliCommand:
             '</html>'
         )
         response2 = FakeResponse()
-        response2.status_code = 200
+        response2.ok = True
         response2.text = (
             '<html>'
             '    <div id="mw-content-text">'
@@ -74,21 +66,15 @@ class TestLeliCommand:
 
         leli(fake_message)
 
-        assert mock_requests.get.call_args_list == [
-            call('https://en.wikipedia.org/w/index.php?search=snowden'),
-            call('https://en.wikipedia.org/wiki/link1')
-        ]
-        mock_reply_to.assert_called_once_with(
-            fake_message, 'Snowden is former CIA employee.',
-            disable_preview=True
-        )
+        mock_reply_to.assert_called_once_with(fake_message, 'Snowden is former CIA employee.',
+                                              disable_web_page_preview=True)
 
     def test_with_term_resorted_on_google(self, fake_message, mocker):
         fake_message.text = '/leli wazaundtechnik'
         mock_requests = mocker.patch('tululbot.commands.requests', autospec=True)
         mock_reply_to = mocker.patch('tululbot.commands.bot.reply_to', autospec=True)
 
-        mock_requests.get.return_value.status_code = 200
+        mock_requests.get.return_value.ok = True
         mock_requests.get.return_value.text = (
             '<html>'
             '<h1>Search results</h1>'
@@ -97,16 +83,12 @@ class TestLeliCommand:
 
         leli(fake_message)
 
-        mock_requests.get.assert_called_once_with(
-            'https://en.wikipedia.org/w/index.php?search=wazaundtechnik'
-        )
         expected_text = (
             'Jangan ngeleli! Googling dong: '
             'https://google.com/search?q=wazaundtechnik'
         )
-        mock_reply_to.assert_called_once_with(
-            fake_message, expected_text, disable_preview=True
-        )
+        mock_reply_to.assert_called_once_with(fake_message, expected_text,
+                                              disable_web_page_preview=True)
 
 
 def test_quote(fake_message, mocker):
@@ -127,145 +109,106 @@ def test_who(fake_message, mocker):
     who(fake_message)
 
     expected_text = (
-        'TululBot v1.6.4\n\n'
+        'TululBot v1.7.0\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
     )
-    mock_reply_to.assert_called_once_with(
-        fake_message, expected_text, disable_preview=True
-    )
+    mock_reply_to.assert_called_once_with(fake_message, expected_text,
+                                          disable_web_page_preview=True)
 
 
-def test_slang(fake_message, fake_user, mocker):
-    class FakeBot:
-        def __init__(self):
-            self.user = fake_user
-            self.reply_to = MagicMock()
+class TestSlangCommand:
 
-    fake_bot = FakeBot()
-    slang_word = 'hohoi ahoi'
-    fake_message.text = '/slang {}'.format(slang_word)
-    slang_lookup_result = 'hahaha'
-    mocker.patch('tululbot.commands.bot', new=fake_bot)
-    mock_lookup_slang = mocker.patch('tululbot.commands.lookup_slang',
-                                     return_value=slang_lookup_result)
+    def test_slang(self, mocker, fake_message):
+        slang_term = 'hohoi ahoi'
+        fake_message.text = '/slang {}'.format(slang_term)
+        slang_lookup_result = 'hahaha'
+        mock_reply_to = mocker.patch('tululbot.commands.bot.reply_to', autospec=True)
+        mock_lookup_slang = mocker.patch('tululbot.commands.lookup_slang',
+                                         return_value=slang_lookup_result,
+                                         autospec=True)
 
-    slang(fake_message)
+        slang(fake_message)
 
-    mock_lookup_slang.assert_called_once_with(slang_word)
-    fake_bot.reply_to.assert_called_once_with(fake_message,
-                                              slang_lookup_result,
-                                              parse_mode="Markdown")
+        mock_lookup_slang.assert_called_once_with(slang_term)
+        mock_reply_to.assert_called_once_with(fake_message, slang_lookup_result,
+                                              parse_mode='Markdown')
 
+    def test_slang_with_bot_name(self, mocker, fake_message):
+        bot_username = 'somebot'
+        slang_term = 'hohoi'
+        fake_message.text = '/slang@{} {}'.format(bot_username, slang_term)
+        slang_lookup_result = 'hahaha'
+        mocker.patch('tululbot.commands.BOT_USERNAME', bot_username)
+        mock_reply_to = mocker.patch('tululbot.commands.bot.reply_to', autospec=True)
+        mock_lookup_slang = mocker.patch('tululbot.commands.lookup_slang',
+                                         return_value=slang_lookup_result,
+                                         autospec=True)
 
-def test_slang_with_bot_name(fake_message, fake_user, mocker):
-    class FakeBot:
-        def __init__(self):
-            self.user = fake_user
-            self.reply_to = MagicMock()
+        slang(fake_message)
 
-    fake_bot = FakeBot()
-    slang_word = 'hohoi'
-    fake_message.text = '/slang@{} {}'.format(fake_bot.user.first_name, slang_word)
-    slang_lookup_result = 'hahaha'
-    mocker.patch('tululbot.commands.bot', new=fake_bot)
-    mock_lookup_slang = mocker.patch('tululbot.commands.lookup_slang',
-                                     return_value=slang_lookup_result)
+        mock_lookup_slang.assert_called_once_with(slang_term)
+        mock_reply_to.assert_called_once_with(fake_message, slang_lookup_result,
+                                              parse_mode='Markdown')
 
-    slang(fake_message)
+    def test_slang_no_term(self, mocker, fake_message):
+        fake_message.text = '/slang'
+        mock_reply_to = mocker.patch('tululbot.commands.bot.reply_to', autospec=True)
 
-    mock_lookup_slang.assert_called_once_with(slang_word)
-    fake_bot.reply_to.assert_called_once_with(fake_message,
-                                              slang_lookup_result,
-                                              parse_mode="Markdown")
+        slang(fake_message)
 
-
-def test_slang_no_word(fake_message, fake_user, mocker):
-    class FakeBot:
-        def __init__(self):
-            self.user = fake_user
-            self.reply_to = MagicMock()
-
-    fake_bot = FakeBot()
-    fake_message.text = '/slang'
-    mocker.patch('tululbot.commands.bot', new=fake_bot)
-
-    slang(fake_message)
-
-    fake_bot.reply_to.assert_called_once_with(fake_message, 'Apa yang mau dicari jir?',
+        mock_reply_to.assert_called_once_with(fake_message, 'Apa yang mau dicari jir?',
                                               force_reply=True)
 
 
 def test_hotline(fake_message, mocker):
     fake_message.text = '/hotline'
-    mock_hotline_message_id = mocker.patch('tululbot.commands.HOTLINE_MESSAGE_ID')
-    mock_forward_message = mocker.patch('tululbot.commands.bot.forward_message')
+    mock_hotline_message_id = mocker.patch('tululbot.commands.HOTLINE_MESSAGE_ID',
+                                           autospec=True)
+    mock_forward_message = mocker.patch('tululbot.commands.bot.forward_message', autospec=True)
 
     hotline(fake_message)
 
-    mock_forward_message.assert_called_once_with(
-        fake_message.chat.id, fake_message.chat.id, mock_hotline_message_id
-    )
+    mock_forward_message.assert_called_once_with(fake_message.chat.id, fake_message.chat.id,
+                                                 mock_hotline_message_id)
 
 
-def test_hbd(fake_message, fake_user, mocker):
-    class FakeBot:
-        def __init__(self):
-            self.user = fake_user
-            self.send_message = MagicMock()
+class TestHbdCommand:
 
-    fake_bot = FakeBot()
-    fake_name = "Tutu Lulul"
-    fake_message.text = '/hbd {}'.format(fake_name)
-    greetings_format = ('hoi {}'
-                        ' met ultah ya moga sehat dan sukses selalu '
-                        '\U0001F389 \U0001F38A')
-    greetings = greetings_format.format(fake_name)
+    def test_hbd(self, mocker, fake_message):
+        fake_name = 'Tutu Lulul'
+        fake_message.text = '/hbd {}'.format(fake_name)
+        greetings_format = ('hoi {}'
+                            ' met ultah ya moga sehat dan sukses selalu '
+                            '\U0001F389 \U0001F38A')
+        greetings = greetings_format.format(fake_name)
+        mock_send_message = mocker.patch('tululbot.commands.bot.send_message', autospec=True)
 
-    mocker.patch('tululbot.commands.bot', new=fake_bot)
-    mock_send_message = mocker.patch('tululbot.commands.bot.send_message')
+        hbd(fake_message)
 
-    hbd(fake_message)
+        mock_send_message.assert_called_once_with(fake_message.chat.id, greetings)
 
-    mock_send_message.assert_called_once_with(fake_message.chat.id, greetings)
+    def test_hbd_with_bot_name(self, mocker, fake_message):
+        bot_username = 'somebot'
+        fake_name = 'Tutu Lulul'
+        fake_message.text = '/hbd@{} {}'.format(bot_username, fake_name)
+        greetings_format = ('hoi {}'
+                            ' met ultah ya moga sehat dan sukses selalu '
+                            '\U0001F389 \U0001F38A')
+        greetings = greetings_format.format(fake_name)
+        mocker.patch('tululbot.commands.BOT_USERNAME', bot_username)
+        mock_send_message = mocker.patch('tululbot.commands.bot.send_message')
 
+        hbd(fake_message)
 
-def test_hbd_with_bot_name(fake_message, fake_user, mocker):
-    class FakeBot:
-        def __init__(self):
-            self.user = fake_user
-            self.send_message = MagicMock()
+        mock_send_message.assert_called_once_with(fake_message.chat.id, greetings)
 
-    fake_bot = FakeBot()
-    fake_name = "Tutu Lulul"
-    fake_message.text = '/hbd@{} {}'.format(
-        fake_bot.user.first_name,
-        fake_name
-    )
-    greetings_format = ('hoi {}'
-                        ' met ultah ya moga sehat dan sukses selalu '
-                        '\U0001F389 \U0001F38A')
-    greetings = greetings_format.format(fake_name)
-    mocker.patch('tululbot.commands.bot', new=fake_bot)
-    mock_send_message = mocker.patch('tululbot.commands.bot.send_message')
+    def test_hbd_no_word(self, mocker, fake_message):
+        fake_message.text = '/hbd'
+        mock_reply_to = mocker.patch('tululbot.commands.bot.reply_to', autospec=True)
 
-    hbd(fake_message)
+        hbd(fake_message)
 
-    mock_send_message.assert_called_once_with(fake_message.chat.id, greetings)
-
-
-def test_hbd_no_word(fake_message, fake_user, mocker):
-    class FakeBot:
-        def __init__(self):
-            self.user = fake_user
-            self.reply_to = MagicMock()
-
-    fake_bot = FakeBot()
-    fake_message.text = '/hbd'
-    mocker.patch('tululbot.commands.bot', new=fake_bot)
-
-    hbd(fake_message)
-
-    fake_bot.reply_to.assert_called_once_with(fake_message, 'Siapa yang ultah?',
+        mock_reply_to.assert_called_once_with(fake_message, 'Siapa yang ultah?',
                                               force_reply=True)

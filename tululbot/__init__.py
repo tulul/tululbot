@@ -4,11 +4,12 @@ from flask import Flask, request, abort
 app = Flask(__name__)
 app.config.from_object('{}.config'.format(__name__))
 
+from telebot import types
+
 from .utils import TululBot
 bot = TululBot(app.config['TELEGRAM_BOT_TOKEN'])  # Must be before importing commands
 
 from . import commands  # noqa
-from .types import Update
 
 
 # Why do this? See https://core.telegram.org/bots/api#setwebhook
@@ -20,18 +21,19 @@ app.logger.setLevel(app.config['LOG_LEVEL'])
 
 @app.route(webhook_url_path, methods=['POST'])
 def main():
-    if request.headers.get('content-type') == 'application/json':
-        update = Update.from_dict(request.get_json())
+    json_data = request.get_json(silent=True)
+    if json_data is not None:
+        update = types.Update.de_json(json_data)
         app.logger.debug('Get an update with id %s', update.update_id)
         if update.message is not None:
-            bot.handle_new_message(update.message)
+            bot.process_new_messages([update.message])
         return 'OK'
     else:
         abort(403)
 
 
 @app.errorhandler(500)
-def handle_uncaught_exception(error):
+def handle_uncaught_exception(error):  # pragma: no cover
     if app.config['TULULBOT_DEVEL_CHAT_ID']:
         chat_id = app.config['TULULBOT_DEVEL_CHAT_ID']
         bot.send_message(chat_id, traceback.format_exc())
@@ -39,5 +41,5 @@ def handle_uncaught_exception(error):
     return 'OK'
 
 
-if app.config['APP_ENV'] != 'development':
+if app.config['APP_ENV'] != 'development':  # pragma: no cover
     bot.set_webhook('{}{}'.format(webhook_url_base, webhook_url_path))
