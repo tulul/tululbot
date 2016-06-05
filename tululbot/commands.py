@@ -32,17 +32,17 @@ def leli(message):
         bot.reply_to(message, result, disable_web_page_preview=True)
 
 
-@bot.message_handler(regexp=r'^/quote(@{})$'.format(BOT_USERNAME))
+@bot.message_handler(regexp=r'^/quote(@{})?$'.format(BOT_USERNAME))
 def quote(message):
     app.logger.debug('Detected quote command {!r}'.format(message.text))
     return bot.reply_to(message, quote_engine.retrieve_random())
 
 
-@bot.message_handler(regexp=r'^/who(@{})$'.format(BOT_USERNAME))
+@bot.message_handler(regexp=r'^/who(@{})?$'.format(BOT_USERNAME))
 def who(message):
     app.logger.debug('Detected who command {!r}'.format(message.text))
     about_text = (
-        'TululBot v1.7.1\n\n'
+        'TululBot v1.7.2\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
@@ -67,7 +67,7 @@ def slang(message):
         bot.reply_to(message, lookup_slang(term), parse_mode='Markdown')
 
 
-@bot.message_handler(regexp=r'^/hotline(@{})$'.format(BOT_USERNAME))
+@bot.message_handler(regexp=r'^/hotline(@{})?$'.format(BOT_USERNAME))
 def hotline(message):
     app.logger.debug('Detected hotline command {!r}'.format(message.text))
     if HOTLINE_MESSAGE_ID is not None:
