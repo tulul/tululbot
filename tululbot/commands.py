@@ -13,7 +13,7 @@ BOT_USERNAME = app.config['TELEGRAM_BOT_USERNAME']
 
 
 @bot.message_handler(func=bot.create_is_reply_to_filter('Apa yang mau dileli?'))
-@bot.message_handler(regexp=r'^/leli(@{})?( \w+)*$'.format(BOT_USERNAME))
+@bot.message_handler(regexp=r'^/leli(@{})?( .+)*$'.format(BOT_USERNAME))
 def leli(message):
     app.logger.debug('Detected leli command {!r}'.format(message.text))
     try:
@@ -42,7 +42,7 @@ def quote(message):
 def who(message):
     app.logger.debug('Detected who command {!r}'.format(message.text))
     about_text = (
-        'TululBot v1.7.3\n\n'
+        'TululBot v1.7.4\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
