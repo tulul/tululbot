@@ -42,7 +42,7 @@ def quote(message):
 def who(message):
     app.logger.debug('Detected who command {!r}'.format(message.text))
     about_text = (
-        'TululBot v1.7.2\n\n'
+        'TululBot v1.7.3\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
@@ -75,7 +75,7 @@ def hotline(message):
 
 
 @bot.message_handler(func=bot.create_is_reply_to_filter('Siapa yang ultah?'))
-@bot.message_handler(regexp=r'^/hbd(@{})?( \w+)*$'.format(BOT_USERNAME))
+@bot.message_handler(regexp=r'^/hbd(@{})?( @?\w+)*$'.format(BOT_USERNAME))
 def hbd(message):
     app.logger.debug('Detected hbd command {!r}'.format(message.text))
     try:
