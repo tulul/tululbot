@@ -1,10 +1,10 @@
-from urllib.parse import urlencode
+from requests.exceptions import ConnectionError, HTTPError
 
-from bs4 import BeautifulSoup
-import requests
-
-from . import app, bot
-from .utils import QuoteEngine, lookup_slang
+from tululbot import app, bot
+from tululbot.utils.kbbi import format_def, lookup_kbbi_definition
+from tululbot.utils.quote import QuoteEngine
+from tululbot.utils.slang import lookup_slang
+from tululbot.utils.leli import search_on_google, search_on_wikipedia
 
 
 quote_engine = QuoteEngine()
@@ -26,23 +26,36 @@ def leli(message):
         bot.reply_to(message, 'Apa yang mau dileli?', force_reply=True)
     else:
         app.logger.debug('Extracted leli term {!r}'.format(term))
-        result = search_on_wikipedia(term)
-        if result is None:
-            result = search_on_google(term)
-        bot.reply_to(message, result, disable_web_page_preview=True)
+        try:
+            result = search_on_wikipedia(term)
+        except HTTPError:
+            bot.reply_to(message, 'Aduh ada error nich')
+        except ConnectionError:
+            bot.reply_to(message, "Koneksi lagi bapuk nih :'(")
+        else:
+            if result is None:
+                result = search_on_google(term)
+            bot.reply_to(message, result, disable_web_page_preview=True)
 
 
 @bot.message_handler(regexp=r'^/quote(@{})?$'.format(BOT_USERNAME))
 def quote(message):
     app.logger.debug('Detected quote command {!r}'.format(message.text))
-    return bot.reply_to(message, quote_engine.retrieve_random())
+    try:
+        random_quote = quote_engine.retrieve_random()
+    except HTTPError:
+        bot.reply_to(message, 'Aduh ada error nich')
+    except ConnectionError:
+        bot.reply_to(message, "Koneksi lagi bapuk nih :'(")
+    else:
+        bot.reply_to(message, random_quote)
 
 
 @bot.message_handler(regexp=r'^/who(@{})?$'.format(BOT_USERNAME))
 def who(message):
     app.logger.debug('Detected who command {!r}'.format(message.text))
     about_text = (
-        'TululBot v1.7.4\n\n'
+        'TululBot v1.8.0\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
@@ -63,8 +76,15 @@ def slang(message):
         app.logger.debug('Cannot split text {!r}'.format(message.text))
         bot.reply_to(message, 'Apa yang mau dicari jir?', force_reply=True)
     else:
-        app.logger.debug('Extracted slang term {!r}'.format(term))
-        bot.reply_to(message, lookup_slang(term), parse_mode='Markdown')
+        try:
+            definition = lookup_slang(term)
+        except HTTPError:
+            bot.reply_to(message, 'Aduh ada error nich')
+        except ConnectionError:
+            bot.reply_to(message, "Koneksi lagi bapuk nih :'(")
+        else:
+            app.logger.debug('Extracted slang term {!r}'.format(term))
+            bot.reply_to(message, definition, parse_mode='Markdown')
 
 
 @bot.message_handler(regexp=r'^/hotline(@{})?$'.format(BOT_USERNAME))
@@ -95,57 +115,29 @@ def hbd(message):
         bot.send_message(message.chat.id, greetings)
 
 
-def search_on_wikipedia(term):
-    search_url = 'https://en.wikipedia.org/w/index.php'
-
-    response = requests.get(search_url, params=dict(search=term))
-    if not response.ok:
-        return None
-
-    page = response.text
-    if not has_result(page):
-        return None
-
-    first_paragraph = parse_first_paragraph(page)
-    if not has_disambiguations(first_paragraph.get_text()):
-        return first_paragraph.get_text()
-
-    disambiguation_url = parse_first_disambiguation_link(page)
-
-    response = requests.get(disambiguation_url)
-    if not response.ok:
-        return None
-
-    disambiguated_page = response.text
-    return parse_first_paragraph(disambiguated_page).get_text()
-
-
-def parse_first_disambiguation_link(page):
-    def valid_link(tag):
-        return tag.name == 'a' and tag['href'].startswith('/wiki')
-
-    path = parse_content_text(page).find(valid_link)['href']
-    return 'https://en.wikipedia.org{}'.format(path)
-
-
-def has_disambiguations(paragraph):
-    return 'may refer to:' in paragraph
-
-
-def has_result(page):
-    return ('Search results' not in page and
-            parse_first_paragraph(page) is not None)
-
-
-def parse_first_paragraph(page):
-    return parse_content_text(page).find('p')
-
-
-def parse_content_text(page):
-    return BeautifulSoup(page, 'html.parser').find('div', id='mw-content-text')
-
-
-def search_on_google(term):
-    query_string = urlencode(dict(q=term))
-    search_url = 'https://google.com/search?{}'.format(query_string)
-    return 'Jangan ngeleli! Googling dong: {}'.format(search_url)
+@bot.message_handler(func=bot.create_is_reply_to_filter('Cari apa lu?'))
+@bot.message_handler(regexp=r'^/kbbi(@{})?( \w+)*$'.format(BOT_USERNAME))
+def kbbi(message):
+    app.logger.debug('Detected kbbi command {!r}'.format(message.text))
+    try:
+        if message.text.startswith('/kbbi'):
+            _, term = message.text.split(' ', maxsplit=1)
+        else:
+            term = message.text
+    except ValueError:
+        app.logger.debug('Cannot split text {!r}'.format(message.text))
+        bot.reply_to(message, 'Cari apa lu?', force_reply=True)
+    else:
+        app.logger.debug('Extracted kbbi term {!r}'.format(term))
+        try:
+            defs = lookup_kbbi_definition(term)
+        except HTTPError:
+            bot.reply_to(message, 'Aduh ada error nich')
+        except ConnectionError:
+            bot.reply_to(message, "Koneksi lagi bapuk nih :'(")
+        else:
+            if defs:
+                response = '\n'.join(format_def(i, d) for i, d in enumerate(defs, start=1))
+                bot.reply_to(message, response, parse_mode='Markdown')
+            else:
+                bot.reply_to(message, 'Gak ada bray')

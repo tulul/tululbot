@@ -8,13 +8,15 @@
 
 **/quote** - Get random quote from [our database](https://github.com/tulul/tulul-quotes)
 
-**/slang** - Lookup slang word definition; the result may surprise you!
+**/slang** - Look up slang word definition; the result may surprise you!
 
 **/hotline** - Dev group only
 
 **/who** - Know your tululbot
 
 **/hbd** - Send your friend a birthday blessing message
+
+**/kbbi** - Look up word definition in KBBI
 
 ## Development Guide
 

@@ -1,15 +1,15 @@
 import traceback
 
-from flask import Flask, request, abort
+from flask import Flask, abort, request
 app = Flask(__name__)
 app.config.from_object('{}.config'.format(__name__))
 
 from telebot import types
 
-from .utils import TululBot
+from tululbot.utils import TululBot
 bot = TululBot(app.config['TELEGRAM_BOT_TOKEN'])  # Must be before importing commands
 
-from . import commands  # noqa
+from tululbot import commands  # noqa
 
 
 # Why do this? See https://core.telegram.org/bots/api#setwebhook

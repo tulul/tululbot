@@ -2,7 +2,7 @@
 
 import code
 from os import environ
-from os.path import join, dirname
+from os.path import dirname, join
 import subprocess
 import sys
 
