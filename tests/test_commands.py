@@ -1,6 +1,6 @@
 from requests.exceptions import HTTPError, ConnectionError
 
-from tululbot.commands import leli, quote, who, slang, hotline, hbd, kbbi
+from tululbot.commands import leli, quote, who, slang, hotline, hbd, kbbi, eid
 
 
 class TestLeliCommand:
@@ -312,3 +312,14 @@ class TestKBBICommand:
         kbbi(fake_message)
 
         mock_reply_to.assert_called_once_with(fake_message, "Koneksi lagi bapuk nih :'(")
+
+
+def test_eid_command(mocker, fake_message):
+    fake_message.text = '/eid'
+    mock_send_message = mocker.patch('tululbot.commands.bot.send_message', autospec=True)
+
+    eid(fake_message)
+
+    expected_message = ('Taqabbalallahu minna wa minkum, shiyaamana wa shiyaamakum. '
+                        'Mohon maaf lahir dan batin ya guys.')
+    mock_send_message.assert_called_once_with(fake_message.chat.id, expected_message)

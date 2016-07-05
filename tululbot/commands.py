@@ -141,3 +141,11 @@ def kbbi(message):
                 bot.reply_to(message, response, parse_mode='Markdown')
             else:
                 bot.reply_to(message, 'Gak ada bray')
+
+
+@bot.message_handler(regexp=r'^/eid(@{})?$'.format(BOT_USERNAME))
+def eid(message):
+    app.logger.debug('Detected eid command {!r}'.format(message.text))
+    eid_greeting = ('Taqabbalallahu minna wa minkum, shiyaamana wa shiyaamakum. '
+                    'Mohon maaf lahir dan batin ya guys.')
+    bot.send_message(message.chat.id, eid_greeting)
