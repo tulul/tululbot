@@ -55,7 +55,7 @@ def quote(message):
 def who(message):
     app.logger.debug('Detected who command {!r}'.format(message.text))
     about_text = (
-        'TululBot v1.8.0\n\n'
+        'TululBot v1.9.0\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
@@ -147,5 +147,6 @@ def kbbi(message):
 def eid(message):
     app.logger.debug('Detected eid command {!r}'.format(message.text))
     eid_greeting = ('Taqabbalallahu minna wa minkum, shiyaamana wa shiyaamakum. '
-                    'Mohon maaf lahir dan batin ya guys.')
+                    'Mohon maaf lahir dan batin ya guys. '
+                    'Dari {} dan keluarga.'.format(message.from_user.first_name))
     bot.send_message(message.chat.id, eid_greeting)
