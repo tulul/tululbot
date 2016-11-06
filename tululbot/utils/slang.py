@@ -6,8 +6,7 @@ import urbandict as ud
 
 
 def lookup_slang(word):
-    not_found_word = 'Gak nemu cuy'
-    return lookup_slang_sources(word) or not_found_word
+    return 'Temporarily disabled.'
 
 
 def lookup_slang_sources(word):
