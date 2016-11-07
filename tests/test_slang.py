@@ -22,7 +22,7 @@ def test_lookup_kamusslang(mocker):
 
     rv = lookup_kamusslang('jdflafj')
 
-    assert rv == 'Temporarily disabled.'
+    assert rv == ''.join(strings)
 
 
 def test_lookup_kamusslang_no_definition_found(mocker):
@@ -40,7 +40,7 @@ def test_lookup_kamusslang_no_definition_found(mocker):
 
     rv = lookup_kamusslang('jdflafj')
 
-    assert rv == 'Temporarily disabled.'
+    assert rv is None
 
 
 def test_lookup_kamusslang_close_word_suggestion(mocker):
@@ -63,7 +63,7 @@ def test_lookup_kamusslang_close_word_suggestion(mocker):
 
     rv = lookup_kamusslang('jdflafj')
 
-    assert rv == 'Temporarily disabled.'
+    assert rv is None
 
 
 def test_lookup_urbandictionary(mocker):
@@ -83,7 +83,7 @@ def test_lookup_urbandictionary(mocker):
 
     rv = lookup_urbandictionary('eemmbeekk')
 
-    assert rv == 'Temporarily disabled.'
+    assert rv == fake_definition[0]['def']
 
 
 def test_lookup_urbandictionary_no_definition_found(mocker):
@@ -99,7 +99,7 @@ def test_lookup_urbandictionary_no_definition_found(mocker):
 
     rv = lookup_urbandictionary('eemmbeekk')
 
-    assert rv == 'Temporarily disabled.'
+    assert rv is None
 
 
 def test_lookup_slang_when_only_urbandictionary_has_definition(mocker):
@@ -110,7 +110,7 @@ def test_lookup_slang_when_only_urbandictionary_has_definition(mocker):
 
     rv = lookup_slang('kimi no tame ni dekiru koto ga, boku ni aru kana?')
 
-    assert rv == 'Temporarily disabled.'
+    assert rv == fake_definition
 
 
 def test_lookup_slang_when_only_kamusslang_has_definition(mocker):
@@ -122,7 +122,7 @@ def test_lookup_slang_when_only_kamusslang_has_definition(mocker):
 
     rv = lookup_slang('futohi no nagasa wo kanjimasu')
 
-    assert rv == 'Temporarily disabled.'
+    assert rv == fake_definition
 
 
 def test_lookup_slang_when_both_urbandictionary_and_kamusslang_have_no_definition(mocker):
@@ -132,7 +132,7 @@ def test_lookup_slang_when_both_urbandictionary_and_kamusslang_have_no_definitio
 
     rv = lookup_slang('hitomi wo tojireba anata ga')
 
-    assert rv == 'Temporarily disabled.'
+    assert rv == 'Gak nemu cuy'
 
 
 def test_lookup_slang_when_both_urbandictionary_and_kamusslang_have_definition(mocker):
@@ -151,4 +151,4 @@ def test_lookup_slang_when_both_urbandictionary_and_kamusslang_have_definition(m
         '\U000026AB *kamusslang*:\n{}'
     ).format(fake_urbandict_def, fake_kamusslang_def)
 
-    assert rv == 'Temporarily disabled.'
+    assert rv == fake_definition
