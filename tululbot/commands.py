@@ -150,3 +150,11 @@ def eid(message):
                     'Mohon maaf lahir dan batin ya guys. '
                     'Dari {} dan keluarga.'.format(message.from_user.first_name))
     bot.send_message(message.chat.id, eid_greeting)
+
+
+@bot.message_handler(regexp=r'^/xmas(@{})?$'.format(BOT_USERNAME))
+def xmas(message):
+    app.logger.debug('Detected xmas command {!r}'.format(message.text))
+    xmas_greeting = ('Selamat natal semua! '
+                     'Dari {} dan keluarga.'.format(message.from_user.first_name))
+    bot.send_message(message.chat.id, xmas_greeting)

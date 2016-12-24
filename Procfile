@@ -1,1 +1,1 @@
-web: gunicorn tululbot:app --log-file -
+web: gunicorn tululbot:app --log-file - --workers 1
