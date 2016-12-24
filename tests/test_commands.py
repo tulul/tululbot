@@ -1,6 +1,6 @@
 from requests.exceptions import HTTPError, ConnectionError
 
-from tululbot.commands import leli, quote, who, slang, hotline, hbd, kbbi, eid
+from tululbot.commands import leli, quote, who, slang, hotline, hbd, kbbi, eid, xmas
 
 
 class TestLeliCommand:
@@ -110,7 +110,7 @@ def test_who(fake_message, mocker):
     who(fake_message)
 
     expected_text = (
-        'TululBot v1.9.0\n\n'
+        'TululBot v1.10.0\n\n'
         'Enhancing your tulul experience since 2015\n\n'
         'Contribute on https://github.com/tulul/tululbot\n\n'
         "We're hiring! Contact @iqbalmineraltown for details"
@@ -323,5 +323,17 @@ def test_eid_command(mocker, fake_message, fake_user):
 
     expected_message = ('Taqabbalallahu minna wa minkum, shiyaamana wa shiyaamakum. '
                         'Mohon maaf lahir dan batin ya guys. '
+                        'Dari {} dan keluarga.'.format(fake_user.first_name))
+    mock_send_message.assert_called_once_with(fake_message.chat.id, expected_message)
+
+
+def test_xmas_command(mocker, fake_message, fake_user):
+    fake_message.text = '/xmas'
+    fake_message.from_user = fake_user
+    mock_send_message = mocker.patch('tululbot.commands.bot.send_message', autospec=True)
+
+    xmas(fake_message)
+
+    expected_message = ('Selamat natal semua! '
                         'Dari {} dan keluarga.'.format(fake_user.first_name))
     mock_send_message.assert_called_once_with(fake_message.chat.id, expected_message)
