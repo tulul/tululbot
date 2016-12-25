@@ -16,8 +16,6 @@ json-rpc==1.10.3
 MarkupSafe==0.23
 mccabe==0.5.3
 path.py==8.1.1
-pep8==1.5.7
-pep8-naming==0.3.3
 pexpect==3.3
 pickleshare==0.5
 py==1.4.30

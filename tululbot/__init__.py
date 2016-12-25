@@ -4,9 +4,9 @@ from flask import Flask, abort, request
 app = Flask(__name__)
 app.config.from_object('{}.config'.format(__name__))
 
-from telebot import types
+from telebot import types  # noqa: E402
 
-from tululbot.utils import TululBot
+from tululbot.utils import TululBot  # noqa: E402
 bot = TululBot(app.config['TELEGRAM_BOT_TOKEN'])  # Must be before importing commands
 
 from tululbot import commands  # noqa
