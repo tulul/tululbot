@@ -64,7 +64,7 @@ def who(message):
 
 
 @bot.message_handler(func=bot.create_is_reply_to_filter('Apa yang mau dicari jir?'))
-@bot.message_handler(regexp=r'^/slang(@{})?( \w+)*$'.format(BOT_USERNAME))
+@bot.message_handler(regexp=r'^/slang(@{})?( .+)*$'.format(BOT_USERNAME))
 def slang(message):
     app.logger.debug('Detected slang command {!r}'.format(message.text))
     try:
