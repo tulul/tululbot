@@ -158,3 +158,22 @@ def xmas(message):
     xmas_greeting = ('Selamat natal semua! '
                      'Dari {} dan keluarga.'.format(message.from_user.first_name))
     bot.send_message(message.chat.id, xmas_greeting)
+
+@bot.message_handler(regexp=r'^/kawin(@{})?( .+)*$'.format(BOT_USERNAME))
+def kawin(message):
+    app.logger.debug('Detected kawin command {!r}'.format(message.text))
+    try:
+        if message.text.startswith('/kawin'):
+            _, couple = message.text.split(' ', maxsplit=1)
+        else:
+            couple = message.text
+    except ValueError:
+        app.logger.debug('Cannot split text {!r}'.format(message.text))
+        bot.reply_to(message, 'Siapa yang mau kawin jir?', force_reply=True)
+    else:
+        app.logger.debug('Extracted kawin couple {!r}'.format(couple))
+        kawin_greeting = ('Hoi {} selamat nikah & kawin ya! '
+                          'Semoga jadi keluarga yang bahagia. '
+                          'Semoga lancar semuanya sampai enna-enna. '
+                          'Dari {} dan keluarga.'.format(couple, message.from_user.first_name))
+        bot.send_message(message.chat.id, kawin_greeting)

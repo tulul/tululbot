@@ -1,6 +1,6 @@
 from requests.exceptions import HTTPError, ConnectionError
 
-from tululbot.commands import leli, quote, who, slang, hotline, hbd, kbbi, eid, xmas
+from tululbot.commands import leli, quote, who, slang, hotline, hbd, kbbi, eid, xmas, kawin
 
 
 class TestLeliCommand:
@@ -313,6 +313,29 @@ class TestKBBICommand:
 
         mock_reply_to.assert_called_once_with(fake_message, "Koneksi lagi bapuk nih :'(")
 
+
+class TestKawinCommand:
+
+    def test_kawin(self, mocker, fake_message, fake_user):
+        fake_message.text = '/kawin mpid'
+        fake_message.from_user = fake_user
+        mock_send_message = mocker.patch('tululbot.commands.bot.send_message', autospec=True)
+
+        kawin(fake_message)
+
+        expected_message = ('Hoi mpid selamat nikah & kawin ya! '
+                            'Semoga jadi keluarga yang bahagia. '
+                            'Semoga lancar semuanya sampai enna-enna. '
+                            'Dari {} dan keluarga.'.format(fake_user.first_name))
+        mock_send_message.assert_called_once_with(fake_message.chat.id, expected_message)
+
+    def test_no_couple(self, mocker, fake_message):
+        fake_message.text = '/kawin'
+        mock_reply_to = mocker.patch('tululbot.commands.bot.reply_to', autospec=True)
+
+        kawin(fake_message)
+
+        mock_reply_to.assert_called_once_with(fake_message, 'Siapa yang mau kawin jir?', force_reply=True)
 
 def test_eid_command(mocker, fake_message, fake_user):
     fake_message.text = '/eid'
