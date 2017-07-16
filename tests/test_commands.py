@@ -335,7 +335,9 @@ class TestKawinCommand:
 
         kawin(fake_message)
 
-        mock_reply_to.assert_called_once_with(fake_message, 'Siapa yang mau kawin jir?', force_reply=True)
+        mock_reply_to.assert_called_once_with(fake_message, 'Siapa yang mau kawin jir?',
+                                              force_reply=True)
+
 
 def test_eid_command(mocker, fake_message, fake_user):
     fake_message.text = '/eid'

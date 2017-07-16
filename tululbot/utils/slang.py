@@ -1,5 +1,7 @@
 from urllib.parse import quote_plus
 
+from requests import HTTPError
+
 from bs4 import BeautifulSoup
 import requests
 import urbandict as ud
@@ -12,7 +14,12 @@ def lookup_slang(word):
 
 def lookup_slang_sources(word):
     urbandict_def = lookup_urbandictionary(word)
-    kamusslang_def = lookup_kamusslang(word)
+
+    try:
+        kamusslang_def = lookup_kamusslang(word)
+    except HTTPError:
+        kamusslang_def = None
+
     if urbandict_def is not None and kamusslang_def is not None:
         return (
             '\U000026AB *urbandictionary*:\n{}'
