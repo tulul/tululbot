@@ -1,6 +1,7 @@
 from requests.exceptions import HTTPError, ConnectionError
 
-from tululbot.commands import leli, quote, who, slang, hotline, hbd, kbbi, eid, xmas, kawin
+from tululbot.commands import leli, quote, who, slang, hotline, hbd, kbbi, eid, xmas, kawin, \
+    tampol
 
 
 class TestLeliCommand:
@@ -362,3 +363,29 @@ def test_xmas_command(mocker, fake_message, fake_user):
     expected_message = ('Selamat natal semua! '
                         'Dari {} dan keluarga.'.format(fake_user.first_name))
     mock_send_message.assert_called_once_with(fake_message.chat.id, expected_message)
+
+
+class TestTampol:
+
+    def test_tampol(self, fake_message, mocker):
+        fake_message.text = '/tampol'
+        fake_tampol_message_id = 123
+        mocker.patch('tululbot.commands.TAMPOL_MESSAGE_ID', fake_tampol_message_id)
+        mock_forward_message = mocker.patch('tululbot.commands.bot.forward_message',
+                                            autospec=True)
+
+        tampol(fake_message)
+
+        mock_forward_message.assert_called_once_with(fake_message.chat.id,
+                                                     fake_message.chat.id,
+                                                     fake_tampol_message_id)
+
+    def test_no_tampol_message_id_set(self, fake_message, mocker):
+        fake_message.text = '/tampol'
+        mocker.patch('tululbot.commands.TAMPOL_MESSAGE_ID', None)
+        mock_forward_message = mocker.patch('tululbot.commands.bot.forward_message',
+                                            autospec=True)
+
+        tampol(fake_message)
+
+        assert not mock_forward_message.called

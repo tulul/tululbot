@@ -10,6 +10,7 @@ from tululbot.utils.leli import search_on_google, search_on_wikipedia
 quote_engine = QuoteEngine()
 HOTLINE_MESSAGE_ID = app.config['HOTLINE_MESSAGE_ID']
 BOT_USERNAME = app.config['TELEGRAM_BOT_USERNAME']
+TAMPOL_MESSAGE_ID = app.config['TAMPOL_MESSAGE_ID']
 
 
 @bot.message_handler(func=bot.create_is_reply_to_filter('Apa yang mau dileli?'))
@@ -179,3 +180,10 @@ def kawin(message):
                           'Semoga lancar semuanya sampai enna-enna. '
                           'Dari {} dan keluarga.'.format(couple, message.from_user.first_name))
         bot.send_message(message.chat.id, kawin_greeting)
+
+
+@bot.message_handler(regexp=r'^/tampol(@{})?$'.format(BOT_USERNAME))
+def tampol(message):
+    app.logger.debug('Detected hotline command {!r}'.format(message.text))
+    if TAMPOL_MESSAGE_ID is not None:
+        bot.forward_message(message.chat.id, message.chat.id, TAMPOL_MESSAGE_ID)

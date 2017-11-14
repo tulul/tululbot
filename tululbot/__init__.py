@@ -26,6 +26,9 @@ def main():
         update = types.Update.de_json(json_data)
         app.logger.debug('Get an update with id %s', update.update_id)
         if update.message is not None:
+            app.logger.debug('Get message with id: %s, content: %s',
+                             update.message.message_id,
+                             update.message.text)
             bot.process_new_messages([update.message])
         return 'OK'
     else:
